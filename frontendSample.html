@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>API Data Viewer</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    #data { margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Live Data from Python API</h1>
+  <button onclick="fetchData()">Load Data</button>
+  <div id="data">Click the button to load data...</div>
+
+  <script>
+    async function fetchData() {
+      try {
+        const response = await fetch('http://localhost:5000/api/data');
+        const data = await response.json();
+
+        document.getElementById('data').innerHTML = `
+          <strong>Message:</strong> ${data.message}<br>
+          <strong>Value:</strong> ${data.value}
+        `;
+      } catch (error) {
+        document.getElementById('data').innerHTML = 
+          `<span style="color:red;">Error: ${error.message}</span>`;
+      }
+    }
+
+    // Optional: Load data automatically on page load
+    // window.onload = fetchData;
+  </script>
+</body>
+</html>
