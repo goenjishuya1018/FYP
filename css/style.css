@@ -125,3 +125,42 @@ body {
         background-position: -200% 0;
     }
 }
+
+/* Add to style.css */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    height: 100vh; /* Add this */
+    overflow: hidden; /* Add this */
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 280px;
+    height: 100vh; /* Add this */
+}
+
+.iframe-container {
+    flex: 1;
+    overflow: hidden;
+}
+
+#contentFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+/* Update sidebar styles for better mobile */
+@media (max-width: 1024px) {
+    .main-content {
+        margin-left: 0;
+    }
+    
+    .sidebar {
+        z-index: 1001;
+    }
+}
