@@ -1,4 +1,4 @@
-/* .dashboard-wrapper {
+.dashboard-wrapper {
 min-height: 100vh;
 background-color: var(--bg-gray);
 }
@@ -12,7 +12,7 @@ margin-bottom: 24px;
 
 .dashboard-content {
 padding: 0 24px 24px;
-} */
+}
 
 /* Market for Dashboard */
 .news-section {
