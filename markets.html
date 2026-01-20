@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Details - Theta Investment Hub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components/market-detail.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/api/financialApi.js"></script>
+    <script src="js/components/marketDetail.js"></script>
+</head>
+<body>
+    <div class="market-detail-wrapper">
+        <!-- Header with back button -->
+        <!-- <header class="market-header">
+            <button class="back-button" onclick="goBack()">← Back</button>
+            <div class="header-actions">
+                <button class="btn-icon" onclick="addToWatchlist()">⭐</button>
+                <button class="btn-icon" onclick="shareStock()">↗️</button>
+            </div>
+        </header> -->
+
+        <!-- Stock Overview -->
+        <section class="stock-overview">
+            <div class="stock-header">
+                <div class="stock-logo" id="stockLogo">NIKE</div>
+                <div class="stock-info">
+                    <h1 id="stockName">Nike Inc.</h1>
+                    <div class="stock-symbol" id="stockSymbol">NKE</div>
+                    <div class="stock-exchange" id="stockExchange">NYSE</div>
+                </div>
+            </div>
+
+            <div class="price-section">
+                <div class="current-price">
+                    <div class="price-amount" id="currentPrice">$104.92</div>
+                    <div class="price-change positive" id="priceChange">
+                        <span class="change-amount">+$1.47</span>
+                        <span class="change-percent">(+1.42%)</span>
+                    </div>
+                </div>
+                <div class="price-info">
+                    <span class="badge">Real-time</span>
+                    <span class="market-status" id="marketStatus">● Market Open</span>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="stock-tabs">
+                <button class="tab active" data-tab="overview">Overview</button>
+                <!-- <button class="tab" data-tab="portfolio">Portfolio</button>
+                <button class="tab" data-tab="dividends">Dividends</button>
+                <button class="tab" data-tab="discussion">Discussion</button>
+                <button class="tab" data-tab="financials">Financials</button> -->
+            </nav>
+        </section>
+
+        <!-- Main Content Area -->
+        <main class="market-content">
+            <!-- Overview Tab Content -->
+            <div id="overviewTab" class="tab-content active">
+                <!-- Price Chart -->
+                <section class="chart-section">
+                    <div class="chart-header">
+                        <h3>Price Chart</h3>
+                        <div class="time-filters">
+                            <button class="time-btn" data-range="1D">1D</button>
+                            <button class="time-btn" data-range="1W">1W</button>
+                            <button class="time-btn active" data-range="1M">1M</button>
+                            <button class="time-btn" data-range="3M">3M</button>
+                            <button class="time-btn" data-range="1Y">1Y</button>
+                            <button class="time-btn" data-range="5Y">5Y</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                    <div class="chart-info" id="chartInfo">
+                        <div>Range: <span id="chartRange">1 Day</span></div>
+                        <div>Interval: <span id="chartInterval">5 minutes</span></div>
+                    </div>
+                </section>
+
+                <!-- Key Metrics -->
+                <section class="metrics-section">
+                    <h3>Key Metrics</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Market Cap</div>
+                            <div class="metric-value" id="marketCap">$161.2B</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">P/E Ratio</div>
+                            <div class="metric-value" id="peRatio">28.5</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Dividend Yield</div>
+                            <div class="metric-value" id="dividendYield">1.42%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Beta</div>
+                            <div class="metric-value" id="beta">0.96</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">52W High</div>
+                            <div class="metric-value" id="week52High">$128.68</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">52W Low</div>
+                            <div class="metric-value" id="week52Low">$88.66</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- About Company -->
+                <section class="about-section">
+                    <h3>About Nike</h3>
+                    <div class="about-content" id="companyDescription">
+                        Nike, Inc. is an American multinational corporation that is engaged in the design, development, manufacturing, and worldwide marketing and sales of footwear, apparel, equipment, accessories, and services. The company is headquartered near Beaverton, Oregon, in the Portland metropolitan area.
+                    </div>
+                    <div class="company-details">
+                        <div class="detail-item">
+                            <span class="detail-label">CEO:</span>
+                            <span class="detail-value" id="ceoName">John Donahoe</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Employees:</span>
+                            <span class="detail-value" id="employees">83,700</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Sector:</span>
+                            <span class="detail-value" id="sector">Consumer Cyclical</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Industry:</span>
+                            <span class="detail-value" id="industry">Footwear & Apparel</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Website:</span>
+                            <a href="https://www.nike.com" class="detail-value link" id="website">nike.com</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Financials Tab Content -->
+            <div id="financialsTab" class="tab-content">
+                <section class="financials-section">
+                    <h3>Financial Highlights</h3>
+                    
+                    <div class="financials-grid">
+                        <!-- Income Statement -->
+                        <div class="financial-card">
+                            <h4>Income Statement (TTM)</h4>
+                            <div class="financial-metric">
+                                <span class="metric-label">Revenue</span>
+                                <span class="metric-value" id="revenueTTM">$51.22B</span>
+                            </div>
+                            <div class="financial-metric">
+                                <span class="metric-label">Gross Profit</span>
+                                <span class="metric-value" id="grossProfitTTM">$22.85B</span>
+                            </div>
+                            <div class="financial-metric">
+                                <span class="metric-label">Operating Income</span>
+                                <span class="metric-value" id="operatingIncomeTTM">$6.38B</span>
+                            </div>
+                            <div class="financial-metric">
+                                <span class="metric-label">Net Income</span>
+                                <span class="metric-value" id="netIncomeTTM">$5.72B</span>
+                            </div>
+                            <div class="financial-metric">
+                                <span class="metric-label">EPS</span>
+                                <span class="metric-value" id="epsTTM">$3.67</span>
+                            </div>
+                        </div>
+
+                        <!-- Balance Sheet -->
+                        <div class="financial-card">
+                            <h4>Balance Sheet</h4>
+                            <div class="financial-metric">
+                                <span class="metric-label">Total Assets</span>
+                                <span class="metric-value" id="totalAssets">$37.54B</span>
+                            </div>
+                            <div class="financial-metric">
+                                <span class="metric-label">Total Liabilities</span>
+                                <span class="metric-value" id="totalLiabilities">$23.85B</span>
+                            </div>
+                            <div class="financial-metric">
+                                <span class="metric-label">Total Equity</span>
+                                <span class="metric-value" id="totalEquity">$13.69B</span>
+                            </div>
+                            <div class="financial-metric">
+                                <span class="metric-label">Cash & Equivalents</span>
+                                <span class="metric-value" id="cashEquivalents">$8.93B</span>
+                            </div>
+                            <div class="financial-metric">
+                                <span class="metric-label">Debt</span>
+                                <span class="metric-value" id="totalDebt">$9.42B</span>
+                            </div>
+                        </div>
+
+                        <!-- Ratios -->
+                        <div class="financial-card">
+                            <h4>Key Ratios</h4>
+                            <div class="financial-metric">
+                                <span class="metric-label">Profit Margin</span>
+                                <span class="metric-value" id="profitMargin">11.2%</span>
+                            </div>
+                            <div class="financial-metric">
+                                <span class="metric-label">ROE</span>
+                                <span class="metric-value" id="roe">41.8%</span>
+                            </div>
+                            <div class="financial-metric">
+                                <span class="metric-label">ROA</span>
+                                <span class="metric-value" id="roa">15.2%</span>
+                            </div>
+                            <div class="financial-metric">
+                                <span class="metric-label">Debt to Equity</span>
+                                <span class="metric-value" id="debtToEquity">0.69</span>
+                            </div>
+                            <div class="financial-metric">
+                                <span class="metric-label">Current Ratio</span>
+                                <span class="metric-value" id="currentRatio">2.45</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Earnings Chart -->
+                    <div class="chart-section">
+                        <h4>Quarterly Revenue & Earnings</h4>
+                        <div class="chart-container">
+                            <canvas id="earningsChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Dividends Tab Content -->
+            <div id="dividendsTab" class="tab-content">
+                <section class="dividends-section">
+                    <h3>Dividend Information</h3>
+                    
+                    <div class="dividend-summary">
+                        <div class="summary-card">
+                            <div class="summary-label">Current Dividend Yield</div>
+                            <div class="summary-value" id="currentYield">1.42%</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Annual Dividend</div>
+                            <div class="summary-value" id="annualDividend">$1.48</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Payout Ratio</div>
+                            <div class="summary-value" id="payoutRatio">40.3%</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Ex-Dividend Date</div>
+                            <div class="summary-value" id="exDividendDate">Dec 01, 2024</div>
+                        </div>
+                    </div>
+
+                    <!-- Dividend Chart -->
+                    <div class="chart-section">
+                        <h4>Dividend History</h4>
+                        <div class="chart-container">
+                            <canvas id="dividendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Dividend History Table -->
+                    <div class="dividend-history">
+                        <h4>Dividend History</h4>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Ex-Date</th>
+                                        <th>Payment Date</th>
+                                        <th>Amount</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dividendHistoryBody">
+                                    <!-- Filled by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Dividend Forecast -->
+                    <div class="dividend-forecast">
+                        <h4>Dividend Forecast</h4>
+                        <div class="forecast-content">
+                            <p>Nike has consistently increased its dividend for the past 20 years. Based on historical patterns and current earnings, the next dividend is expected to be announced in <strong>February 2025</strong>.</p>
+                            <div class="forecast-metrics">
+                                <div class="forecast-metric">
+                                    <span>Next Expected:</span>
+                                    <strong>$0.37</strong>
+                                </div>
+                                <div class="forecast-metric">
+                                    <span>Payment Date:</span>
+                                    <strong>Mar 01, 2025</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Portfolio Tab Content -->
+            <div id="portfolioTab" class="tab-content">
+                <section class="portfolio-section">
+                    <h3>Your Holdings</h3>
+                    
+                    <div class="holdings-summary">
+                        <div class="summary-card large">
+                            <div class="summary-label">Current Value</div>
+                            <div class="summary-value">$8,425.50</div>
+                            <div class="summary-change positive">+$125.30 (1.51%)</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Shares Owned</div>
+                            <div class="summary-value">80</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Avg Cost</div>
+                            <div class="summary-value">$103.75</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Total Gain</div>
+                            <div class="summary-value positive">+$93.60</div>
+                        </div>
+                    </div>
+
+                    <!-- Trading Actions -->
+                    <div class="trading-actions">
+                        <h4>Quick Actions</h4>
+                        <div class="action-buttons">
+                            <button class="btn-primary buy-btn" onclick="openTradeModal('buy')">Buy</button>
+                            <button class="btn-secondary sell-btn" onclick="openTradeModal('sell')">Sell</button>
+                            <button class="btn-outline" onclick="addToWatchlist()">Add to Watchlist</button>
+                        </div>
+                    </div>
+
+                    <!-- Performance Chart -->
+                    <div class="chart-section">
+                        <h4>Investment Performance</h4>
+                        <div class="chart-container">
+                            <canvas id="investmentChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- News Section -->
+        <section class="news-section">
+            <h3>Latest News</h3>
+            <div class="news-grid" id="stockNews">
+                <!-- News articles loaded by JavaScript -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Trading Modal -->
+    <div id="tradeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="tradeModalTitle">Buy NKE</h2>
+                <button class="close-btn" onclick="closeTradeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="trade-info">
+                    <div class="stock-info">
+                        <div class="stock-name">Nike Inc. (NKE)</div>
+                        <div class="stock-price">$104.92</div>
+                    </div>
+                    <div class="trade-form">
+                        <div class="form-group">
+                            <label for="shares">Shares</label>
+                            <input type="number" id="shares" min="1" value="10" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="orderType">Order Type</label>
+                            <select id="orderType">
+                                <option value="market">Market</option>
+                                <option value="limit">Limit</option>
+                                <option value="stop">Stop</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price ($)</label>
+                            <input type="number" id="price" value="104.92" step="0.01" disabled>
+                        </div>
+                        <div class="total-cost">
+                            <span>Estimated Cost:</span>
+                            <strong id="estimatedCost">$1,049.20</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeTradeModal()">Cancel</button>
+                <button class="btn-primary" onclick="executeTrade()">Confirm Trade</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Utility functions
+        function goBack() {
+            if (window.parent === window) {
+                window.history.back();
+            } else {
+                window.parent.postMessage({ type: 'navigate', page: 'dashboard.html' }, '*');
+            }
+        }
+
+        function addToWatchlist() {
+            const stockSymbol = document.getElementById('stockSymbol').textContent;
+            alert(`Added ${stockSymbol} to your watchlist`);
+            // In real implementation, this would call an API
+        }
+
+        function shareStock() {
+            const stockSymbol = document.getElementById('stockSymbol').textContent;
+            const stockName = document.getElementById('stockName').textContent;
+            const stockPrice = document.getElementById('currentPrice').textContent;
+            
+            const shareText = `Check out ${stockName} (${stockSymbol}) trading at ${stockPrice}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: `${stockSymbol} Stock Information`,
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Stock information copied to clipboard!');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

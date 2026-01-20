@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Theta Investment Hub</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/components/dPortfolio.css">
-    <link rel="stylesheet" href="css/components/dMarket.css">
+    <link rel="stylesheet" href="css/components/dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/api/stockApi.js"></script>
     <script src="js/utils/helpers.js"></script>
@@ -32,13 +31,6 @@
             <section class="portfolio-overview">
                 <div class="section-header">
                     <h2>Portfolio Overview</h2>
-                    <div class="time-filters">
-                        <button class="time-filter active">1D</button>
-                        <button class="time-filter">1W</button>
-                        <button class="time-filter">1M</button>
-                        <button class="time-filter">1Y</button>
-                        <button class="time-filter">All</button>
-                    </div>
                 </div>
                 
                 <div class="portfolio-cards">
@@ -80,10 +72,17 @@
             <section class="performance-section">
                 <div class="section-header">
                     <h2>Portfolio Performance</h2>
-                    <div class="chart-actions">
+                    <!-- <div class="chart-actions">
                         <button class="chart-action">Line</button>
                         <button class="chart-action active">Area</button>
                         <button class="chart-action">Export</button>
+                    </div> -->
+                    <div class="time-filters">
+                        <button class="time-filter">1D</button>
+                        <button class="time-filter">1W</button>
+                        <button class="time-filter active">1M</button>
+                        <button class="time-filter">1Y</button>
+                        <button class="time-filter">All</button>
                     </div>
                 </div>
                 <div class="chart-container">
@@ -128,23 +127,5 @@
             </section>
         </div>
     </div>
-
-    <style>
-        .dashboard-wrapper {
-            min-height: 100vh;
-            background-color: var(--bg-gray);
-        }
-        
-        .dashboard-header {
-            background: var(--bg-white);
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 24px;
-            margin-bottom: 24px;
-        }
-        
-        .dashboard-content {
-            padding: 0 24px 24px;
-        }
-    </style>
 </body>
 </html>
