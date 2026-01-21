@@ -1,40 +1,42 @@
+# example program to link to a Supabase database and query data from a table
+
 import os
 from flask import Flask, jsonify, render_template
 from supabase import create_client, Client
 
 app = Flask(__name__)
 
-# --- STEP 1: Initialize Supabase Client ---
-# Replace these with your actual Supabase project details
 SUPABASE_URL = "https://dxmldckmccbjktosyjeb.supabase.co"
 SUPABASE_KEY = "sb_publishable_-zX-BOgqx6gXCesZDFiSIA_w27Ad04I"
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# --- STEP 2: Create a Route to Query the Data ---
-@app.route('/get-user/<id>')
-def get_user(id):
-    try:
-        # Query the 'user' table where the 'user_id' column matches the URL parameter
-        # Try this if User doesn't work
-        response = supabase.table('User').select("*").eq("user_id", "tester").execute()
+# --- MAIN PAGE (The one with the iframe) ---
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-        user_data = response.data
+# --- IFRAME CONTENT PAGES ---
+@app.route('/dashboard')
+def dashboard():
+    # You can also query Supabase here if the dashboard needs data
+    return render_template('dashboard.html')
 
-        if user_data:
-            return jsonify({
-                "status": "success",
-                "data": user_data,
-                "message" : f"User with ID '{id}' retrieved successfully."
-            }), 200
-        else:
-            return jsonify({
-                "status": "error",
-                "message": f"User with ID '{id}' not found."
-            }), 404
+@app.route('/market')
+def market():
+    return render_template('market.html')
 
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+@app.route('/user/<id>')
+def user_profile(id):
+    # Fetch data from Supabase
+    response = supabase.table("User").select("*").eq("user_id", id).maybe_single().execute()
+    user_data = response.data
+
+    if user_data:
+        # Pass the 'user_data' dictionary to the HTML template
+        return render_template('index.html', user=user_data)
+    else:
+        return "User not found", 404
 
 if __name__ == '__main__':
     app.run(debug=True)

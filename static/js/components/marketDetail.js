@@ -62,7 +62,8 @@ class MarketDetail {
     
     updateUI(overview, quote) {
         // Update basic info
-        // document.getElementById('stockSymbol').textContent = overview.symbol;
+
+        document.getElementById('stockSymbol').textContent = overview.symbol;
         document.getElementById('stockName').textContent = overview.name;
         document.getElementById('stockExchange').textContent = overview.exchange;
         document.getElementById('stockLogo').textContent = overview.symbol;

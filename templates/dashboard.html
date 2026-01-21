@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Theta Investment Hub</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/components/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../static/js/api/stockApi.js"></script>
+    <script src="../static/js/utils/helpers.js"></script>
+    <script src="../static/js/components/portfolio.js"></script>
+    <script src="../static/js/components/charts.js"></script>
+    <script src="../static/js/components/news.js"></script>
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/components/refresh.js"></script>
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <!-- Header -->
+        <!-- <header class="dashboard-header">
+            <div class="header-left">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="date-display" id="currentDate"></div>
+            </div>
+        </header> -->
+        
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Portfolio Overview -->
+            <section class="portfolio-overview">
+                <div class="section-header">
+                    <h2>Portfolio Overview</h2>
+                </div>
+                
+                <div class="portfolio-cards">
+                    <div class="portfolio-card total-value">
+                        <div class="card-header">
+                            <h3>Total Value</h3>
+                            <span class="card-badge">Live</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="amount" id="totalValue">$125,430.75</div>
+                            <div class="change positive" id="totalChange">+$2,340.50 (+1.90%)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="portfolio-card daily-change">
+                        <div class="card-header">
+                            <h3>Today's Change</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="amount" id="dailyChange">+$1,245.30</div>
+                            <div class="change positive">+0.98%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="portfolio-card allocation">
+                        <div class="card-header">
+                            <h2>Asset Allocation</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="allocation-chart" id="allocationChart">
+                                <!-- Chart will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Portfolio Performance Chart -->
+            <section class="performance-section">
+                <div class="section-header">
+                    <h2>Portfolio Performance</h2>
+                    <!-- <div class="chart-actions">
+                        <button class="chart-action">Line</button>
+                        <button class="chart-action active">Area</button>
+                        <button class="chart-action">Export</button>
+                    </div> -->
+                    <div class="time-filters">
+                        <button class="time-filter">1D</button>
+                        <button class="time-filter">1W</button>
+                        <button class="time-filter active">1M</button>
+                        <button class="time-filter">1Y</button>
+                        <button class="time-filter">All</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Holdings & Watchlist -->
+            <div class="grid-columns">
+                <!-- Holdings -->
+                <section class="holdings-section">
+                    <div class="section-header">
+                        <h2>Your Holdings</h2>
+                        <button class="btn-secondary">View All</button>
+                    </div>
+                    <div class="holdings-list" id="holdingsList">
+                        <!-- Holdings will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Watchlist -->
+                <section class="watchlist-section">
+                    <div class="section-header">
+                        <h2>Watchlist</h2>
+                        <button class="btn-secondary">Manage</button>
+                    </div>
+                    <div class="watchlist" id="watchlist">
+                        <!-- Watchlist items will be loaded here -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Market News -->
+            <section class="news-section">
+                <div class="section-header">
+                    <h2>Market News</h2>
+                    <button class="btn-secondary">See All</button>
+                </div>
+                <div class="news-grid" id="newsGrid">
+                    <!-- News articles will be loaded here -->
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
