@@ -21,7 +21,7 @@
             </div>
             
             <ul class="sidebar-nav">
-                <li class="nav-item active" data-page="{{ url_for('dashboard')}}">
+                <li class="nav-item active" data-page="{{ url_for('dashboard', id='tester') }}">
                     <!-- <a href="dashboard.html" target="xspace"></a> -->
                     <span class="nav-icon">🏠</span>
                     <span class="nav-text">Dashboard</span>
@@ -30,7 +30,7 @@
                     <span class="nav-icon">💼</span>
                     <span class="nav-text">Portfolio</span>
                 </li>
-                <li class="nav-item" data-page="/get-user/markets.html">
+                <li class="nav-item" data-page="{{ url_for('markets')}}">
                     <!-- <a href="markets.html" target="xspace"></a> -->
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Markets</span>
@@ -78,7 +78,7 @@
                 <iframe 
                     name="xspace" 
                     id="contentFrame" 
-                    src="{{ url_for('dashboard') }}" 
+                    src="dashboard.html" 
                     frameborder="0">
                 </iframe>
             </div>
