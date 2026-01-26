@@ -17,26 +17,25 @@ def index():
     return render_template('index.html')
 
 # --- IFRAME CONTENT PAGES ---
-@app.route('/dashboard')
-def dashboard():
-    # You can also query Supabase here if the dashboard needs data
-    return render_template('dashboard.html')
-
-@app.route('/market')
-def market():
-    return render_template('market.html')
-
-@app.route('/user/<id>')
-def user_profile(id):
+@app.route('/dashboard/<id>')
+def dashboard(id):
     # Fetch data from Supabase
     response = supabase.table("User").select("*").eq("user_id", id).maybe_single().execute()
     user_data = response.data
 
     if user_data:
         # Pass the 'user_data' dictionary to the HTML template
-        return render_template('index.html', user=user_data)
+        return render_template('dashboard.html', user=user_data)
     else:
         return "User not found", 404
+
+# @app.route('/dashboard')
+# def dashboard():
+#     return render_template('dashboard.html')
+
+@app.route('/markets')
+def markets():
+    return render_template('markets.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
