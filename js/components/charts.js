@@ -2,7 +2,7 @@ class Charts {
     static createPerformanceChartConfig(timeRange) {
         // Generate mock data based on time range
         const { labels, data } = this.generateChartData(timeRange);
-        
+
         return {
             type: 'line',
             data: {
@@ -72,6 +72,7 @@ class Charts {
             }
         };
     }
+
 
     static generateChartData(timeRange) {
         let labels = [];

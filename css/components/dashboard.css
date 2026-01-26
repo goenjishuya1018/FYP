@@ -1,17 +1,20 @@
 .dashboard-wrapper {
-min-height: 100vh;
-background-color: var(--bg-gray);
+    min-height: 100vh;
+    background: var(--bg-gray);
+    padding-bottom: 40px;
 }
 
-.dashboard-header {
-background: var(--bg-white);
-border-bottom: 1px solid var(--border-color);
-padding: 20px 24px;
-margin-bottom: 24px;
-}
+/* .dashboard-header {
+    background: var(--bg-white);
+    border-bottom: 1px solid var(--border-color);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+} */
 
 .dashboard-content {
-padding: 0 24px 24px;
+    padding: 0 24px 24px;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* Market for Dashboard */
@@ -172,7 +175,7 @@ padding: 0 24px 24px;
     position: relative;
 }
 
-.chart-actions {
+/* .chart-actions {
     display: flex;
     gap: 8px;
 }
@@ -192,7 +195,7 @@ padding: 0 24px 24px;
     background: var(--primary-color);
     color: white;
     border-color: var(--primary-color);
-}
+} */
 
 .holdings-section,
 .watchlist-section {

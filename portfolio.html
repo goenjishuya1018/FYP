@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Theta Investment Hub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components/portfolio-detail.css">
+    <link rel="icon" href="images/coin.svg" type="image/svg+xml">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/api/portfolioApi.js"></script>
+    <script src="js/components/portfolioDetail.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="portfolio-detail-wrapper">
+        <!-- Header -->
+        <header class="portfolio-header">
+            <div class="header-left">
+                <h1 class="page-title"></h1>
+                <div class="portfolio-summary">
+                    <div class="total-value" id="totalValue">$154,280.65</div>
+                    <div class="change-info positive" id="dailyChange">+$2,150.75 (+1.41%)</div>
+                </div>
+            </div>
+            <!-- <div class="header-right">
+                <button class="btn-primary" onclick="addTransaction()">+ Add Transaction</button>
+                <button class="btn-icon" onclick="exportPortfolio()">📤</button>
+            </div> -->
+        </header>
+
+        <!-- Main Content -->
+        <main class="portfolio-content">
+            <!-- Portfolio Overview Cards -->
+            <section class="overview-cards">
+                <div class="overview-card">
+                    <div class="card-label">Dividend Yield (TTM)</div>
+                    <div class="card-value" id="dividendYield">2.18%</div>
+                    <div class="card-subtext">Trailing 12 Months</div>
+                </div>
+                <div class="overview-card">
+                    <div class="card-label">YoC (TTM)</div>
+                    <div class="card-value" id="yieldOnCost">3.45%</div>
+                    <div class="card-subtext">Yield on Cost</div>
+                </div>
+                <div class="overview-card">
+                    <div class="card-label">CAGR (Payouts)</div>
+                    <div class="card-value positive" id="cagr">15.27%</div>
+                    <div class="card-subtext">Annual Growth Rate</div>
+                </div>
+                <div class="overview-card">
+                    <div class="card-label">Total Dividends</div>
+                    <div class="card-value" id="totalDividends">$3,285.40</div>
+                    <div class="card-subtext">Year to Date</div>
+                </div>
+            </section>
+
+            <!-- Time Filter -->
+            <div class="time-filter-section">
+                <div class="filter-buttons">
+                    <button class="filter-btn" data-filter="1D">1D</button>
+                    <button class="filter-btn" data-filter="1W">1W</button>
+                    <button class="filter-btn" data-filter="1M">1M</button>
+                    <button class="filter-btn" data-filter="YTD">YTD</button>
+                    <button class="filter-btn active" data-filter="1Y">1Y</button>
+                    <button class="filter-btn" data-filter="MAX">MAX</button>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn-outline" onclick="searchAssets()">Search asset type, ISIN...</button>
+                </div>
+            </div>
+
+            <!-- Portfolio Charts -->
+            <div class="chart-grid">
+                <!-- Performance Chart -->
+                <section class="chart-section performance-chart">
+                    <div class="chart-header">
+                        <h3>Portfolio Performance</h3>
+                        <div class="chart-actions">
+                            <button class="chart-action active" data-type="value">Value</button>
+                            <button class="chart-action" data-type="return">Return %</button>
+                            <button class="chart-action" data-type="vsindex">vs S&P 500</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Allocation Chart -->
+                <section class="chart-section allocation-chart">
+                    <div class="chart-header">
+                        <h3>Asset Allocation</h3>
+                        <div class="chart-actions">
+                            <button class="chart-action active" data-view="type">By Type</button>
+                            <button class="chart-action" data-view="sector">By Sector</button>
+                            <button class="chart-action" data-view="region">By Region</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="allocationChart"></canvas>
+                    </div>
+                    <div class="allocation-details" id="allocationDetails">
+                        <!-- Filled by JavaScript -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Holdings Section -->
+            <section class="holdings-section">
+                <div class="section-header">
+                    <h3>Holdings</h3>
+                    <div class="section-actions">
+                        <div class="search-box">
+                            <input type="text" placeholder="Search holdings..." id="holdingsSearch">
+                            <span class="search-icon">🔍</span>
+                        </div>
+                        <button class="btn-outline" onclick="addHolding()">+ Add Holding</button>
+                    </div>
+                </div>
+
+                <!-- Holdings Table -->
+                <div class="table-container">
+                    <table class="holdings-table">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Shares</th>
+                                <th>Avg Cost</th>
+                                <th>Market Price</th>
+                                <th>Market Value</th>
+                                <th>Daily Change</th>
+                                <th>Total Gain</th>
+                                <th>Dividend Yield</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="holdingsTable">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Dividend Calendar -->
+            <section class="dividend-section">
+                <div class="section-header">
+                    <h3>Dividend Calendar 2024</h3>
+                    <div class="section-actions">
+                        <!-- <select id="dividendYear" onchange="updateDividendCalendar()">
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                        </select> -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Year
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">2024</a></li>
+                                <li><a class="dropdown-item" href="#">2025</a></li>
+                                <li><a class="dropdown-item" href="#">2026</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calendar-grid">
+                    <div class="calendar-month">
+                        <h4>January 2024</h4>
+                        <div class="dividend-events" id="dividendJan">
+                            <!-- Filled by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="calendar-month">
+                        <h4>February 2024</h4>
+                        <div class="dividend-events" id="dividendFeb">
+                            <!-- Filled by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="calendar-month">
+                        <h4>March 2024</h4>
+                        <div class="dividend-events" id="dividendMar">
+                            <!-- Filled by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="calendar-month">
+                        <h4>April 2024</h4>
+                        <div class="dividend-events" id="dividendApr">
+                            <!-- Filled by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Goals Section -->
+            <section class="goals-section">
+                <div class="section-header">
+                    <h3>Investment Goals</h3>
+                    <button class="btn-primary" onclick="addGoal()">+ Add Goal</button>
+                </div>
+
+                <div class="goals-grid">
+                    <div class="goal-card">
+                        <div class="goal-header">
+                            <div class="goal-icon">🎯</div>
+                            <div class="goal-title">
+                                <h4>Retirement Fund</h4>
+                                <div class="goal-subtitle">Target: $1,000,000</div>
+                            </div>
+                        </div>
+                        <div class="goal-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 42%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span>$420,150 / $1,000,000</span>
+                                <span>42%</span>
+                            </div>
+                        </div>
+                        <div class="goal-details">
+                            <div class="goal-metric">
+                                <span class="metric-label">Monthly Contribution</span>
+                                <span class="metric-value">$2,500</span>
+                            </div>
+                            <div class="goal-metric">
+                                <span class="metric-label">Target Date</span>
+                                <span class="metric-value">Jun 2035</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="goal-card">
+                        <div class="goal-header">
+                            <div class="goal-icon">🏠</div>
+                            <div class="goal-title">
+                                <h4>Down Payment</h4>
+                                <div class="goal-subtitle">Target: $120,000</div>
+                            </div>
+                        </div>
+                        <div class="goal-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 78%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span>$93,600 / $120,000</span>
+                                <span>78%</span>
+                            </div>
+                        </div>
+                        <div class="goal-details">
+                            <div class="goal-metric">
+                                <span class="metric-label">Monthly Contribution</span>
+                                <span class="metric-value">$1,800</span>
+                            </div>
+                            <div class="goal-metric">
+                                <span class="metric-label">Target Date</span>
+                                <span class="metric-value">Dec 2024</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="goal-card">
+                        <div class="goal-header">
+                            <div class="goal-icon">🚗</div>
+                            <div class="goal-title">
+                                <h4>New Car Fund</h4>
+                                <div class="goal-subtitle">Target: $45,000</div>
+                            </div>
+                        </div>
+                        <div class="goal-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 31%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span>$13,950 / $45,000</span>
+                                <span>31%</span>
+                            </div>
+                        </div>
+                        <div class="goal-details">
+                            <div class="goal-metric">
+                                <span class="metric-label">Monthly Contribution</span>
+                                <span class="metric-value">$800</span>
+                            </div>
+                            <div class="goal-metric">
+                                <span class="metric-label">Target Date</span>
+                                <span class="metric-value">Sep 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Dividends -->
+            <section class="recent-dividends">
+                <div class="section-header">
+                    <h3>Transaction Records</h3>
+                    <!-- <button class="btn-outline" onclick="viewAllDividends()">View All</button> -->
+                     <div class="header-right">
+                        <button class="btn-primary" onclick="addTransaction()">+ Add Transaction</button>
+                        <button class="btn-icon" onclick="exportPortfolio()">📤</button>
+                    </div>
+                </div>
+
+                <div class="dividend-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">Dec 2024</div>
+                        <div class="timeline-content">
+                            <div class="dividend-event">
+                                <div class="dividend-company">
+                                    <div class="company-logo">MSFT</div>
+                                    <div class="company-info">
+                                        <div class="company-name">Microsoft</div>
+                                        <div class="dividend-amount">$0.91 per share</div>
+                                    </div>
+                                </div>
+                                <div class="dividend-details">
+                                    <div class="dividend-shares">2 shares</div>
+                                    <div class="dividend-total">$1.82 received</div>
+                                </div>
+                            </div>
+                            <div class="dividend-event">
+                                <div class="dividend-company">
+                                    <div class="company-logo">LVMH</div>
+                                    <div class="company-info">
+                                        <div class="company-name">LVMH</div>
+                                        <div class="dividend-amount">€5.50 per share</div>
+                                    </div>
+                                </div>
+                                <div class="dividend-details">
+                                    <div class="dividend-shares">2 shares</div>
+                                    <div class="dividend-total">€11.00 received</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">Nov 2024</div>
+                        <div class="timeline-content">
+                            <div class="dividend-event">
+                                <div class="dividend-company">
+                                    <div class="company-logo">PG</div>
+                                    <div class="company-info">
+                                        <div class="company-name">Procter & Gamble</div>
+                                        <div class="dividend-amount">$1.057 per share</div>
+                                    </div>
+                                </div>
+                                <div class="dividend-details">
+                                    <div class="dividend-shares">5 shares</div>
+                                    <div class="dividend-total">$5.29 received</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">Oct 2024</div>
+                        <div class="timeline-content">
+                            <div class="dividend-event">
+                                <div class="dividend-company">
+                                    <div class="company-logo">RYA</div>
+                                    <div class="company-info">
+                                        <div class="company-name">Ryanair Holdings</div>
+                                        <div class="dividend-amount">€0.227 per share</div>
+                                    </div>
+                                </div>
+                                <div class="dividend-details">
+                                    <div class="dividend-shares">60 shares</div>
+                                    <div class="dividend-total">€13.62 received</div>
+                                </div>
+                            </div>
+                            <div class="dividend-event">
+                                <div class="dividend-company">
+                                    <div class="company-logo">MSFT</div>
+                                    <div class="company-info">
+                                        <div class="company-name">Microsoft</div>
+                                        <div class="dividend-amount">$0.83 per share</div>
+                                    </div>
+                                </div>
+                                <div class="dividend-details">
+                                    <div class="dividend-shares">2 shares</div>
+                                    <div class="dividend-total">$1.66 received</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add Transaction Modal -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Transaction</h2>
+                <button class="close-btn" onclick="closeTransactionModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="transaction-form">
+                    <div class="form-group">
+                        <label for="transactionType">Transaction Type</label>
+                        <select id="transactionType">
+                            <option value="buy">Buy</option>
+                            <option value="sell">Sell</option>
+                            <option value="dividend">Dividend</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="assetSymbol">Asset Symbol</label>
+                        <input type="text" id="assetSymbol" placeholder="e.g., AAPL" list="assetSuggestions">
+                        <datalist id="assetSuggestions">
+                            <!-- Filled by JavaScript -->
+                        </datalist>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="shares">Shares/Amount</label>
+                            <input type="number" id="shares" placeholder="10" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price per Share</label>
+                            <input type="number" id="price" placeholder="150.25" step="0.01">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionDate">Date</label>
+                        <input type="date" id="transactionDate" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Notes (Optional)</label>
+                        <textarea id="notes" rows="3" placeholder="Add any notes about this transaction..."></textarea>
+                    </div>
+                    <div class="transaction-summary">
+                        <div class="summary-item">
+                            <span>Total Amount:</span>
+                            <strong id="transactionTotal">$0.00</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeTransactionModal()">Cancel</button>
+                <button class="btn-primary" onclick="submitTransaction()">Add Transaction</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Goal Modal -->
+    <div id="goalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Investment Goal</h2>
+                <button class="close-btn" onclick="closeGoalModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="goal-form">
+                    <div class="form-group">
+                        <label for="goalName">Goal Name</label>
+                        <input type="text" id="goalName" placeholder="e.g., Retirement, House Down Payment">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="targetAmount">Target Amount ($)</label>
+                            <input type="number" id="targetAmount" placeholder="100000" step="1000">
+                        </div>
+                        <div class="form-group">
+                            <label for="currentAmount">Current Amount ($)</label>
+                            <input type="number" id="currentAmount" placeholder="0" step="1000">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="targetDate">Target Date</label>
+                            <input type="date" id="targetDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="monthlyContribution">Monthly Contribution ($)</label>
+                            <input type="number" id="monthlyContribution" placeholder="500" step="50">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="goalIcon">Icon</label>
+                        <select id="goalIcon">
+                            <option value="🎯">🎯 Target</option>
+                            <option value="🏠">🏠 House</option>
+                            <option value="🚗">🚗 Car</option>
+                            <option value="✈️">✈️ Travel</option>
+                            <option value="🎓">🎓 Education</option>
+                            <option value="💰">💰 Wealth</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeGoalModal()">Cancel</button>
+                <button class="btn-primary" onclick="submitGoal()">Create Goal</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set default transaction date to today
+        document.getElementById('transactionDate').value = new Date().toISOString().split('T')[0];
+        // Set default goal target date to 1 year from now
+        const oneYearFromNow = new Date();
+        oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+        document.getElementById('targetDate').value = oneYearFromNow.toISOString().split('T')[0];
+    </script>
+</body>
+</html>

@@ -1,18 +1,17 @@
-/* market-detail.css */
 .market-detail-wrapper {
     min-height: 100vh;
     background: var(--bg-gray);
     padding-bottom: 40px;
 }
 
-.market-header {
+/* .market-header {
     background: var(--bg-white);
     border-bottom: 1px solid var(--border-color);
     padding: 16px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
+} */
 
 .back-button {
     background: transparent;
