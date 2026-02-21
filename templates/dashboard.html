@@ -30,7 +30,7 @@
             <!-- Portfolio Overview -->
             <section class="portfolio-overview">
                 <div class="section-header">
-                    <h2>Portfolio Overview {{ user.email }}</h2>
+                    <h2>Portfolio Overview</h2>
                 </div>
                 
                 <div class="portfolio-cards">
@@ -40,8 +40,8 @@
                             <span class="card-badge">Live</span>
                         </div>
                         <div class="card-content">
-                            <div class="amount" id="totalValue">$125,430.75</div>
-                            <div class="change positive" id="totalChange">+$2,340.50 (+1.90%)</div>
+                            <div class="amount" id="totalValue">${{ portfolio.market_value }}</div>
+                            <div class="change positive" id="totalChange">+${{ portfolio.market_value - portfolio.start_value }}</div>
                         </div>
                     </div>
                     
