@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Theta Investment Hub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components/settings.css">
+    <script src="js/utils/theme.js"></script>
+    <script src="js/components/settings.js"></script>
+</head>
+<body>
+    <div class="settings-wrapper">
+        <!-- Header -->
+        <header class="settings-header">
+            <button class="back-button" onclick="goBack()">← Back</button>
+            <h1 class="page-title">Settings</h1>
+            <div class="header-actions">
+                <button class="btn-primary" onclick="saveSettings()">Save Changes</button>
+            </div>
+        </header>
+
+        <!-- Settings Content -->
+        <main class="settings-content">
+            <!-- Settings Navigation -->
+            <aside class="settings-sidebar">
+                <nav class="settings-nav">
+                    <a href="#account" class="nav-item active" data-section="account">
+                        <span class="nav-icon">👤</span>
+                        <span class="nav-text">Account</span>
+                    </a>
+                    <a href="#notifications" class="nav-item" data-section="notifications">
+                        <span class="nav-icon">🔔</span>
+                        <span class="nav-text">Notifications</span>
+                    </a>
+                    <a href="#appearance" class="nav-item" data-section="appearance">
+                        <span class="nav-icon">🎨</span>
+                        <span class="nav-text">Appearance</span>
+                    </a>
+                    <a href="#privacy" class="nav-item" data-section="privacy">
+                        <span class="nav-icon">🔒</span>
+                        <span class="nav-text">Privacy & Security</span>
+                    </a>
+                    <a href="#preferences" class="nav-item" data-section="preferences">
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-text">Preferences</span>
+                    </a>
+                    <a href="#help" class="nav-item" data-section="help">
+                        <span class="nav-icon">❓</span>
+                        <span class="nav-text">Help & Support</span>
+                    </a>
+                    <a href="#about" class="nav-item" data-section="about">
+                        <span class="nav-icon">ℹ️</span>
+                        <span class="nav-text">About</span>
+                    </a>
+                </nav>
+
+                <div class="settings-footer">
+                    <button class="logout-btn" onclick="logout()">
+                        <span class="nav-icon">🚪</span>
+                        <span class="nav-text">Logout</span>
+                    </button>
+                    <div class="version-info">Version 2.0.1</div>
+                </div>
+            </aside>
+
+            <!-- Settings Panels -->
+            <div class="settings-panels">
+                <!-- Account Settings -->
+                <section id="account" class="settings-panel active">
+                    <h2>Account Settings</h2>
+                    
+                    <div class="settings-group">
+                        <h3>Profile Information</h3>
+                        
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <div class="avatar-large">ZL</div>
+                                <button class="btn-outline" onclick="changeAvatar()">Change</button>
+                            </div>
+                            <div class="profile-info">
+                                <div class="info-row">
+                                    <label>Display Name</label>
+                                    <input type="text" id="displayName" value="Zayne Li" placeholder="Your name">
+                                </div>
+                                <div class="info-row">
+                                    <label>Email Address</label>
+                                    <input type="email" id="email" value="zayne.li@example.com" placeholder="your@email.com">
+                                </div>
+                                <div class="info-row">
+                                    <label>Phone Number</label>
+                                    <input type="tel" id="phone" value="+852 2401 5820" placeholder="+852 1234 5678">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Account Management</h3>
+                        
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Switch Account</div>
+                                <div class="item-description">Switch between different investment accounts</div>
+                            </div>
+                            <button class="btn-secondary" onclick="switchAccount()">Switch</button>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Linked Accounts</div>
+                                <div class="item-description">Manage connected brokerage accounts</div>
+                            </div>
+                            <button class="btn-secondary" onclick="manageLinkedAccounts()">Manage</button>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Delete Account</div>
+                                <div class="item-description text-danger">Permanently delete your account and all data</div>
+                            </div>
+                            <button class="btn-danger" onclick="deleteAccount()">Delete</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Subscription & Billing</h3>
+                        
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Current Plan</div>
+                                <div class="item-description">You're on the <strong>Premium</strong> plan</div>
+                            </div>
+                            <button class="btn-secondary" onclick="manageSubscription()">Manage</button>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Billing Information</div>
+                                <div class="item-description">Update payment methods and billing address</div>
+                            </div>
+                            <button class="btn-secondary" onclick="updateBilling()">Update</button>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Billing History</div>
+                                <div class="item-description">View past invoices and receipts</div>
+                            </div>
+                            <button class="btn-secondary" onclick="viewBillingHistory()">View</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Notifications Settings -->
+                <section id="notifications" class="settings-panel">
+                    <h2>Notification Settings</h2>
+                    
+                    <div class="settings-group">
+                        <h3>Email Notifications</h3>
+                        
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">Price Alerts</div>
+                                <div class="item-description">Get notified when stocks reach your target price</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="priceAlerts" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">Dividend Payments</div>
+                                <div class="item-description">Receive notifications when dividends are paid</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="dividendAlerts" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">Weekly Portfolio Summary</div>
+                                <div class="item-description">Get a weekly summary of your portfolio performance</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="weeklySummary" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">Market News</div>
+                                <div class="item-description">Daily digest of important market news</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="marketNews">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Push Notifications</h3>
+                        
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">Enable Push Notifications</div>
+                                <div class="item-description">Receive real-time alerts on your device</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="pushNotifications" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">Trade Confirmations</div>
+                                <div class="item-description">Get notified when trades are executed</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="tradeConfirmations" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">Account Activity</div>
+                                <div class="item-description">Notifications for login and security events</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="accountActivity" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Notification Schedule</h3>
+                        
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Quiet Hours</div>
+                                <div class="item-description">Don't send notifications during these hours</div>
+                            </div>
+                            <div class="schedule-inputs">
+                                <select id="quietStart">
+                                    <option value="22">10:00 PM</option>
+                                    <option value="23">11:00 PM</option>
+                                    <option value="0">12:00 AM</option>
+                                    <option value="1">1:00 AM</option>
+                                </select>
+                                <span>to</span>
+                                <select id="quietEnd">
+                                    <option value="6">6:00 AM</option>
+                                    <option value="7">7:00 AM</option>
+                                    <option value="8">8:00 AM</option>
+                                    <option value="9">9:00 AM</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Time Zone</div>
+                                <div class="item-description">Your local time zone for notifications</div>
+                            </div>
+                            <select id="timezone">
+                                <option value="EST">Eastern Time (EST)</option>
+                                <option value="CST">Central Time (CST)</option>
+                                <option value="MST">Mountain Time (MST)</option>
+                                <option value="PST" selected>Pacific Time (PST)</option>
+                                <option value="UTC">UTC</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Appearance Settings -->
+                <section id="appearance" class="settings-panel">
+                    <h2>Appearance</h2>
+                    
+                    <div class="settings-group">
+                        <h3>Theme</h3>
+                        
+                        <div class="theme-options">
+                            <div class="theme-option active" data-theme="light" onclick="setTheme('light')">
+                                <div class="theme-preview light-preview">
+                                    <div class="preview-header"></div>
+                                    <div class="preview-content"></div>
+                                </div>
+                                <span class="theme-name">Light</span>
+                                <span class="checkmark">✓</span>
+                            </div>
+                            
+                            <div class="theme-option" data-theme="dark" onclick="setTheme('dark')">
+                                <div class="theme-preview dark-preview">
+                                    <div class="preview-header"></div>
+                                    <div class="preview-content"></div>
+                                </div>
+                                <span class="theme-name">Dark</span>
+                                <span class="checkmark">✓</span>
+                            </div>
+                            
+                            <div class="theme-option" data-theme="system" onclick="setTheme('system')">
+                                <div class="theme-preview system-preview">
+                                    <div class="preview-half light-half"></div>
+                                    <div class="preview-half dark-half"></div>
+                                </div>
+                                <span class="theme-name">System</span>
+                                <span class="checkmark">✓</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Display Options</h3>
+                        
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">Compact Mode</div>
+                                <div class="item-description">Show more information in less space</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="compactMode">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">Animations</div>
+                                <div class="item-description">Enable UI animations and transitions</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="animations" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Font Size</div>
+                                <div class="item-description">Adjust text size throughout the app</div>
+                            </div>
+                            <select id="fontSize">
+                                <option value="small">Small</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="large">Large</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Chart Settings</h3>
+                        
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Default Chart Period</div>
+                                <div class="item-description">Choose your preferred chart time range</div>
+                            </div>
+                            <select id="defaultChartPeriod">
+                                <option value="1D">1 Day</option>
+                                <option value="1W">1 Week</option>
+                                <option value="1M" selected>1 Month</option>
+                                <option value="3M">3 Months</option>
+                                <option value="1Y">1 Year</option>
+                            </select>
+                        </div>
+
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">Show Grid Lines</div>
+                                <div class="item-description">Display grid lines on charts</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="showGridLines" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Privacy & Security -->
+                <section id="privacy" class="settings-panel">
+                    <h2>Privacy & Security</h2>
+                    
+                    <div class="settings-group">
+                        <h3>Security</h3>
+                        
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Two-Factor Authentication</div>
+                                <div class="item-description">Add an extra layer of security to your account</div>
+                            </div>
+                            <button class="btn-secondary" onclick="setup2FA()">Enable</button>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Change Password</div>
+                                <div class="item-description">Update your account password</div>
+                            </div>
+                            <button class="btn-secondary" onclick="changePassword()">Change</button>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Login History</div>
+                                <div class="item-description">View recent login activity</div>
+                            </div>
+                            <button class="btn-secondary" onclick="viewLoginHistory()">View</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Privacy</h3>
+                        
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">Share Portfolio Performance</div>
+                                <div class="item-description">Allow us to use anonymized data for insights</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="sharePerformance">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">Activity Status</div>
+                                <div class="item-description">Show when you're active to others</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="activityStatus" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Data Export</div>
+                                <div class="item-description">Download a copy of your data</div>
+                            </div>
+                            <button class="btn-secondary" onclick="exportData()">Request Export</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Session Management</h3>
+                        
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Active Sessions</div>
+                                <div class="item-description">Manage devices where you're logged in</div>
+                            </div>
+                            <button class="btn-secondary" onclick="manageSessions()">Manage</button>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Logout from All Devices</div>
+                                <div class="item-description text-warning">Sign out everywhere except this device</div>
+                            </div>
+                            <button class="btn-warning" onclick="logoutAllDevices()">Logout All</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Preferences -->
+                <section id="preferences" class="settings-panel">
+                    <h2>Preferences</h2>
+                    
+                    <div class="settings-group">
+                        <h3>Trading Preferences</h3>
+                        
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Default Order Type</div>
+                                <div class="item-description">Choose your preferred order type</div>
+                            </div>
+                            <select id="defaultOrderType">
+                                <option value="market" selected>Market Order</option>
+                                <option value="limit">Limit Order</option>
+                                <option value="stop">Stop Order</option>
+                            </select>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Default Currency</div>
+                                <div class="item-description">Display currency for all values</div>
+                            </div>
+                            <select id="defaultCurrency">
+                                <option value="USD" selected>USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                                <option value="JPY">JPY (¥)</option>
+                                <option value="HKD">HKD (HK$)</option>
+                            </select>
+                        </div>
+
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">One-Click Trading</div>
+                                <div class="item-description">Execute trades without confirmation</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="oneClickTrading">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Dashboard Preferences</h3>
+                        
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Default Dashboard</div>
+                                <div class="item-description">Choose your landing page</div>
+                            </div>
+                            <select id="defaultDashboard">
+                                <option value="dashboard" selected>Overview</option>
+                                <option value="portfolio">Portfolio</option>
+                                <option value="markets">Markets</option>
+                                <option value="watchlist">Watchlist</option>
+                            </select>
+                        </div>
+
+                        <div class="settings-item toggle-item">
+                            <div class="item-info">
+                                <div class="item-title">Show Welcome Message</div>
+                                <div class="item-description">Display greeting on dashboard</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="showWelcome" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Regional Settings</h3>
+                        
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Date Format</div>
+                                <div class="item-description">How dates should be displayed</div>
+                            </div>
+                            <select id="dateFormat">
+                                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                            </select>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Number Format</div>
+                                <div class="item-description">Thousands separator and decimal style</div>
+                            </div>
+                            <select id="numberFormat">
+                                <option value="en-US">1,234.56</option>
+                                <option value="en-EU">1.234,56</option>
+                                <option value="en-IN">1,23,456.78</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Help & Support -->
+                <section id="help" class="settings-panel">
+                    <h2>Help & Support</h2>
+                    
+                    <div class="settings-group">
+                        <h3>Get Help</h3>
+                        
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Help Center</div>
+                                <div class="item-description">Browse articles and tutorials</div>
+                            </div>
+                            <button class="btn-secondary" onclick="openHelpCenter()">Visit</button>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Contact Support</div>
+                                <div class="item-description">Get help from our support team</div>
+                            </div>
+                            <button class="btn-secondary" onclick="contactSupport()">Contact</button>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Community Forums</div>
+                                <div class="item-description">Discuss with other investors</div>
+                            </div>
+                            <button class="btn-secondary" onclick="openForums()">Join</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Feedback</h3>
+                        
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Send Feedback</div>
+                                <div class="item-description">Help us improve Theta</div>
+                            </div>
+                            <button class="btn-secondary" onclick="sendFeedback()">Send</button>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="item-info">
+                                <div class="item-title">Report a Bug</div>
+                                <div class="item-description">Found something not working?</div>
+                            </div>
+                            <button class="btn-secondary" onclick="reportBug()">Report</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- About -->
+                <section id="about" class="settings-panel">
+                    <h2>About</h2>
+                    
+                    <div class="about-section">
+                        <div class="about-logo">
+                            <span class="logo-icon">📈</span>
+                            <span class="logo-text">THETA θ</span>
+                        </div>
+                        
+                        <div class="about-info">
+                            <div class="info-row">
+                                <strong>Version:</strong>
+                                <span>2.0.1 (Build 2024.12)</span>
+                            </div>
+                            <div class="info-row">
+                                <strong>Last Updated:</strong>
+                                <span>December 15, 2024</span>
+                            </div>
+                            <div class="info-row">
+                                <strong>License:</strong>
+                                <span>Premium Subscription</span>
+                            </div>
+                        </div>
+
+                        <div class="legal-links">
+                            <a href="#">Terms of Service</a>
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Licenses</a>
+                        </div>
+
+                        <div class="social-links">
+                            <a href="#" class="social-link">🐦 Twitter</a>
+                            <a href="#" class="social-link">💼 LinkedIn</a>
+                            <a href="#" class="social-link">📘 Facebook</a>
+                        </div>
+
+                        <div class="copyright">
+                            © 2024 Theta Investment Hub. All rights reserved.
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Switch Account Modal -->
+    <div id="switchAccountModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Switch Account</h2>
+                <button class="close-btn" onclick="closeSwitchAccountModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="account-list">
+                    <div class="account-item active" onclick="selectAccount('zayne')">
+                        <div class="account-avatar">ZL</div>
+                        <div class="account-details">
+                            <div class="account-name">Zayne Li</div>
+                            <div class="account-email">zayne.li@example.com</div>
+                            <div class="account-type">Premium</div>
+                        </div>
+                        <div class="account-check">✓</div>
+                    </div>
+                    
+                    <div class="account-item" onclick="selectAccount('sarah')">
+                        <div class="account-avatar">SC</div>
+                        <div class="account-details">
+                            <div class="account-name">Sarah Chen</div>
+                            <div class="account-email">sarah.chen@example.com</div>
+                            <div class="account-type">Basic</div>
+                        </div>
+                    </div>
+                    
+                    <div class="account-item" onclick="selectAccount('michael')">
+                        <div class="account-avatar">MR</div>
+                        <div class="account-details">
+                            <div class="account-name">Michael Rodriguez</div>
+                            <div class="account-email">michael.r@example.com</div>
+                            <div class="account-type">Premium</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn-outline add-account-btn" onclick="addAccount()">
+                    + Add another account
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeSwitchAccountModal()">Cancel</button>
+                <button class="btn-primary" onclick="confirmSwitchAccount()">Switch Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h2>Confirm Logout</h2>
+                <button class="close-btn" onclick="closeLogoutModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to log out?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeLogoutModal()">Cancel</button>
+                <button class="btn-primary" onclick="confirmLogout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            if (window.parent === window) {
+                window.history.back();
+            } else {
+                window.parent.postMessage({ type: 'navigate', page: 'dashboard.html' }, '*');
+            }
+        }
+
+        function saveSettings() {
+            // Collect all settings
+            const settings = {
+                account: {
+                    displayName: document.getElementById('displayName')?.value,
+                    email: document.getElementById('email')?.value,
+                    phone: document.getElementById('phone')?.value
+                },
+                notifications: {
+                    priceAlerts: document.getElementById('priceAlerts')?.checked,
+                    dividendAlerts: document.getElementById('dividendAlerts')?.checked,
+                    weeklySummary: document.getElementById('weeklySummary')?.checked,
+                    marketNews: document.getElementById('marketNews')?.checked,
+                    pushNotifications: document.getElementById('pushNotifications')?.checked,
+                    tradeConfirmations: document.getElementById('tradeConfirmations')?.checked,
+                    accountActivity: document.getElementById('accountActivity')?.checked,
+                    quietStart: document.getElementById('quietStart')?.value,
+                    quietEnd: document.getElementById('quietEnd')?.value,
+                    timezone: document.getElementById('timezone')?.value
+                },
+                appearance: {
+                    theme: document.querySelector('.theme-option.active')?.dataset.theme || 'light',
+                    compactMode: document.getElementById('compactMode')?.checked,
+                    animations: document.getElementById('animations')?.checked,
+                    fontSize: document.getElementById('fontSize')?.value,
+                    defaultChartPeriod: document.getElementById('defaultChartPeriod')?.value,
+                    showGridLines: document.getElementById('showGridLines')?.checked
+                },
+                privacy: {
+                    sharePerformance: document.getElementById('sharePerformance')?.checked,
+                    activityStatus: document.getElementById('activityStatus')?.checked
+                },
+                preferences: {
+                    defaultOrderType: document.getElementById('defaultOrderType')?.value,
+                    defaultCurrency: document.getElementById('defaultCurrency')?.value,
+                    oneClickTrading: document.getElementById('oneClickTrading')?.checked,
+                    defaultDashboard: document.getElementById('defaultDashboard')?.value,
+                    showWelcome: document.getElementById('showWelcome')?.checked,
+                    dateFormat: document.getElementById('dateFormat')?.value,
+                    numberFormat: document.getElementById('numberFormat')?.value
+                }
+            };
+            
+            // Save to localStorage or send to server
+            localStorage.setItem('thetaSettings', JSON.stringify(settings));
+            
+            // Show success message
+            alert('Settings saved successfully!');
+        }
+
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('thetaSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                
+                // Apply settings to form elements
+                // This would populate all the inputs with saved values
+                console.log('Loaded settings:', settings);
+            }
+        }
+
+        // Load saved settings on page load
+        document.addEventListener('DOMContentLoaded', loadSettings);
+    </script>
+</body>
+</html>
