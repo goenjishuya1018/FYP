@@ -51,7 +51,7 @@ def dashboard():
         return redirect(url_for('index'))
     
     # Fetch data from Supabase
-    user_response = supabase.table("User").select("*").eq("user_id", id).maybe_single().execute()
+    user_response = supabase.table("User").select("*").eq("user_id", user_id).maybe_single().execute()
     user_data = user_response.data
 
     p_id = user_data.get('portfolio_id')
@@ -66,6 +66,10 @@ def dashboard():
 @app.route('/markets')
 def markets():
     return render_template('markets.html')
+
+@app.route('/portfolio')
+def portfolio():
+    return render_template('portfolio.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
