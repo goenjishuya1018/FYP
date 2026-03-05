@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market News - Theta Investment Hub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components/sidebar.css">
+    <link rel="stylesheet" href="css/components/header.css">
+    <link rel="stylesheet" href="css/components/news-detail.css">
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/api/stockApi.js"></script>
+    <script src="js/components/newsDetail.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+    <div class="news-content">
+        <!-- Breaking News Ticker -->
+        <div class="breaking-news">
+            <div class="breaking-label">
+                <span class="pulse-dot"></span>
+                BREAKING
+            </div>
+            <div class="breaking-ticker">
+                <div class="ticker-content" id="breakingNewsTicker">
+                    Federal Reserve signals potential rate cuts in Q2 • Tech stocks rally on AI optimism • Oil prices surge amid Middle East tensions
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Summary -->
+        <div class="market-summary">
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>S&P 500</h3>
+                    <span class="summary-change positive">+0.87%</span>
+                </div>
+                <div class="summary-value">5,028.45</div>
+                <div class="summary-detail">+43.25 (0.87%)</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>Dow Jones</h3>
+                    <span class="summary-change positive">+0.68%</span>
+                </div>
+                <div class="summary-value">38,956.32</div>
+                <div class="summary-detail">+264.50 (0.68%)</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>NASDAQ</h3>
+                    <span class="summary-change positive">+1.12%</span>
+                </div>
+                <div class="summary-value">15,990.66</div>
+                <div class="summary-detail">+177.20 (1.12%)</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>Bitcoin</h3>
+                    <span class="summary-change positive">+3.24%</span>
+                </div>
+                <div class="summary-value">$48,256</div>
+                <div class="summary-detail">+$1,512 (3.24%)</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>Gold</h3>
+                    <span class="summary-change negative">-0.32%</span>
+                </div>
+                <div class="summary-value">$2,028.50</div>
+                <div class="summary-detail">-$6.50 (0.32%)</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>Treasury 10Y</h3>
+                    <span class="summary-change negative">-1.45%</span>
+                </div>
+                <div class="summary-value">4.28%</div>
+                <div class="summary-detail">-0.06 (1.45%)</div>
+            </div>
+        </div>
+
+        <!-- Category Pins -->
+        <div class="category-pins">
+            <div class="pins-header">
+                <h3>Pinned Categories</h3>
+                <button class="btn-outline" id="managePinsBtn">Manage Pins</button>
+            </div>
+            <div class="pins-container" id="pinnedCategories">
+                <!-- Pinned categories will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Main News Grid with Categories -->
+        <div class="news-grid-container" id="newsGridContainer">
+            <!-- News categories will be dynamically loaded -->
+        </div>
+
+        <!-- Load More -->
+        <div class="load-more-container">
+            <button class="btn-secondary load-more-btn" id="loadMoreBtn">
+                Load More Articles
+            </button>
+        </div>
+    </div>
+
+    <!-- Pin Management Modal -->
+    <div class="modal" id="pinManagementModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Manage Pinned Categories</h3>
+                <button class="modal-close" id="closePinModal">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">Drag and drop to reorder, or click the pin icon to unpin.</p>
+                <div class="pin-management-list" id="pinManagementList">
+                    <!-- Pin management items will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelPinModal">Cancel</button>
+                <button class="btn-primary" id="savePinsBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- News Detail Modal -->
+    <div class="modal" id="newsDetailModal" style="display: none;">
+        <div class="modal-content news-detail-content">
+            <div class="modal-header">
+                <h3 id="newsDetailTitle">News Article</h3>
+                <button class="modal-close" id="closeNewsModal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="news-detail-meta">
+                    <span class="news-detail-source" id="newsDetailSource"></span>
+                    <span class="news-detail-time" id="newsDetailTime"></span>
+                    <span class="news-detail-category" id="newsDetailCategory"></span>
+                </div>
+                <div class="news-detail-image" id="newsDetailImage">
+                    <div class="placeholder-image">📰</div>
+                </div>
+                <div class="news-detail-summary" id="newsDetailSummary">
+                    <!-- Full article content will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="closeNewsDetailBtn">Close</button>
+                <button class="btn-primary" id="readFullArticleBtn">Read Full Article</button>
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+</html>
