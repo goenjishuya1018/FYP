@@ -12,9 +12,6 @@ def on_close(ws):
 
 def on_open(ws):
     ws.send('{"type":"subscribe","symbol":"AAPL"}')
-    ws.send('{"type":"subscribe","symbol":"AMZN"}')
-    ws.send('{"type":"subscribe","symbol":"BINANCE:BTCUSDT"}')
-    ws.send('{"type":"subscribe","symbol":"IC MARKETS:1"}')
 
 if __name__ == "__main__":
     websocket.enableTrace(True)

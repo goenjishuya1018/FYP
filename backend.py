@@ -83,6 +83,34 @@ def get_market_news():
         return jsonify(news_data) 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/api/market-summary')
+def get_market_summary():
+    # Map your UI names to Finnhub symbols
+    targets = {
+        "S&P 500(SPY)": "SPY", 
+        "Dow Jones(DIA)": "DIA", 
+        "NASDAQ(QQQ)": "QQQ", 
+        "Bitcoin(BTC)": "BINANCE:BTCUSDT",
+        "Gold(GLD)": "GLD",
+        "Treasury 10Y(IEF)": "IEF" # 7-10 Year Treasury Bond ETF
+    }
+    
+    summary_data = []
+    
+    for name, symbol in targets.items():
+        try:
+            quote = finnhub_client.quote(symbol)
+            summary_data.append({
+                "name": name,
+                "price": quote['c'],
+                "change": quote['d'],
+                "percent": quote['dp']
+            })
+        except Exception as e:
+            print(f"Error fetching {name}: {e}")
+            
+    return jsonify(summary_data)
 
 if __name__ == '__main__':
     app.run(debug=True)

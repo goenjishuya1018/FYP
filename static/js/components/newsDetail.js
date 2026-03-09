@@ -46,6 +46,7 @@ class NewsManager {
                 this.setupEventListeners();
                 this.updateBreakingNews();
                 this.startAutoRefresh();
+                this.updateMarketSummary();
             }
             
             loadUserPreferences() {
@@ -75,6 +76,34 @@ class NewsManager {
                     if (b.pinned) return 1;
                     return 0;
                 });
+            }
+
+            async updateMarketSummary() {
+                try {
+                    const response = await fetch('/api/market-summary');
+                    const data = await response.json();
+                    
+                    const container = document.getElementById('marketSummaryContainer');
+                    
+                    container.innerHTML = data.map(item => {
+                        const isPositive = item.change >= 0;
+                        const statusClass = isPositive ? 'positive' : 'negative';
+                        const sign = isPositive ? '+' : '';
+
+                        return `
+                            <div class="summary-card">
+                                <div class="summary-header">
+                                    <h3>${item.name}</h3>
+                                    <span class="summary-change ${statusClass}">${sign}${item.percent.toFixed(2)}%</span>
+                                </div>
+                                <div class="summary-value">${item.price.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+                                <div class="summary-detail">${sign}${item.change.toFixed(2)} (${item.percent.toFixed(2)}%)</div>
+                            </div>
+                        `;
+                    }).join('');
+                } catch (error) {
+                    console.error("Error updating market summary:", error);
+                }
             }
             
             async generateNewsData() {
@@ -875,6 +904,7 @@ class NewsManager {
                 setInterval(() => {
                     this.generateNewsData();
                     this.renderNewsGrid();
+                    this.updateMarketSummary();
                 }, 300000);
             }
             
