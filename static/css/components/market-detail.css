@@ -1,18 +1,17 @@
-/* market-detail.css */
 .market-detail-wrapper {
     min-height: 100vh;
     background: var(--bg-gray);
     padding-bottom: 40px;
 }
 
-.market-header {
+/* .market-header {
     background: var(--bg-white);
     border-bottom: 1px solid var(--border-color);
     padding: 16px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
+} */
 
 .back-button {
     background: transparent;
@@ -224,20 +223,22 @@
 }
 
 .time-btn {
-    padding: 6px 12px;
+    padding: 8px 16px;
     border: 1px solid var(--border-color);
     background: transparent;
     border-radius: 6px;
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
     color: var(--text-secondary);
     transition: all 0.2s;
+    font-weight: 500;
 }
 
 .time-btn:hover {
     border-color: var(--primary-color);
     color: var(--primary-color);
+    transform: translateY(-1px);
 }
 
 .time-btn.active {
