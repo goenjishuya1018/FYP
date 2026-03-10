@@ -31,8 +31,56 @@
             </div>
         </div>
 
-        <div class="market-summary" id="marketSummaryContainer">
-            <p>Loading market data...</p>
+        <!-- Market Summary -->
+        <div class="market-summary">
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>S&P 500</h3>
+                    <span class="summary-change positive">+0.87%</span>
+                </div>
+                <div class="summary-value">5,028.45</div>
+                <div class="summary-detail">+43.25 (0.87%)</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>Dow Jones</h3>
+                    <span class="summary-change positive">+0.68%</span>
+                </div>
+                <div class="summary-value">38,956.32</div>
+                <div class="summary-detail">+264.50 (0.68%)</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>NASDAQ</h3>
+                    <span class="summary-change positive">+1.12%</span>
+                </div>
+                <div class="summary-value">15,990.66</div>
+                <div class="summary-detail">+177.20 (1.12%)</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>Bitcoin</h3>
+                    <span class="summary-change positive">+3.24%</span>
+                </div>
+                <div class="summary-value">$48,256</div>
+                <div class="summary-detail">+$1,512 (3.24%)</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>Gold</h3>
+                    <span class="summary-change negative">-0.32%</span>
+                </div>
+                <div class="summary-value">$2,028.50</div>
+                <div class="summary-detail">-$6.50 (0.32%)</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>Treasury 10Y</h3>
+                    <span class="summary-change negative">-1.45%</span>
+                </div>
+                <div class="summary-value">4.28%</div>
+                <div class="summary-detail">-0.06 (1.45%)</div>
+            </div>
         </div>
 
         <!-- Category Pins -->
@@ -72,7 +120,7 @@
                     <!-- Pin management items will be loaded here -->
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="background: var(--bg-white);">
                 <button class="btn-secondary" id="cancelPinModal">Cancel</button>
                 <button class="btn-primary" id="savePinsBtn">Save Changes</button>
             </div>
