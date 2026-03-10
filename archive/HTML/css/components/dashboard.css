@@ -257,17 +257,31 @@
 }
 
 .time-filter {
-    padding: 6px 12px;
+    padding: 8px 16px;
     border: 1px solid var(--border-color);
     background: transparent;
     border-radius: 6px;
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.2s;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
-.time-filter.active,
+/* .time-filter.active,
 .time-filter:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+} */
+
+.time-filter:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.time-filter.active {
     background: var(--primary-color);
     color: white;
     border-color: var(--primary-color);
