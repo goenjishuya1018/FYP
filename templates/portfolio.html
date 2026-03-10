@@ -22,8 +22,9 @@
             <div class="header-left">
                 <h1 class="page-title"></h1>
                 <div class="portfolio-summary">
-                    <div class="total-value" id="totalValue">$154,280.65</div>
-                    <div class="change-info positive" id="dailyChange">+$2,150.75 (+1.41%)</div>
+                    <div class="total-value" id="totalValue">${{ portfolio.market_value }}</div>
+                    {% set change = portfolio.market_value - portfolio.yesterday_value %}
+                    <div class="change-info positive" id="dailyChange">{{ "+$" if change >= 0 else "-$" }}{{ change|abs|format_currency }}</div>
                 </div>
             </div>
             <!-- <div class="header-right">

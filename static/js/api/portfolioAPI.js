@@ -13,11 +13,6 @@ class PortfolioAPI {
             // Mock data for demo
             await this.simulateDelay();
             return {
-                totalValue: 154280.65,
-                dailyChange: {
-                    amount: 2150.75,
-                    percent: 1.41
-                },
                 dividendMetrics: {
                     yieldTTM: 2.18,
                     yieldOnCost: 3.45,

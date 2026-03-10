@@ -19,7 +19,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 def login():
     email_input = request.form.get("email")
     
-    response = supabase.table("User").select("*").eq("email", email_input).maybe_single().execute()
+    response = supabase.table("user").select("*").eq("email", email_input).maybe_single().execute()
     
     if response.data:
         session['user_id'] = response.data['user_id']
@@ -34,11 +34,11 @@ def index():
     if not user_id:
         return render_template('login.html')
     
-    user_response = supabase.table("User").select("*").eq("user_id", user_id).maybe_single().execute()
+    user_response = supabase.table("user").select("*").eq("user_id", user_id).maybe_single().execute()
     user_data = user_response.data
 
     p_id = user_data.get('portfolio_id')
-    portfolio_response = supabase.table("Portfolio").select("*").eq("portfolio_id", p_id).maybe_single().execute()
+    portfolio_response = supabase.table("portfolio").select("*").eq("portfolio_id", p_id).maybe_single().execute()
     portfolio_data = portfolio_response.data
 
     return render_template('index.html', user=user_data, portfolio=portfolio_data)
@@ -49,11 +49,11 @@ def dashboard():
     if not user_id:
         return redirect(url_for('index'))
     
-    user_response = supabase.table("User").select("*").eq("user_id", user_id).maybe_single().execute()
+    user_response = supabase.table("user").select("*").eq("user_id", user_id).maybe_single().execute()
     user_data = user_response.data
 
     p_id = user_data.get('portfolio_id')
-    portfolio_response = supabase.table("Portfolio").select("*").eq("portfolio_id", p_id).maybe_single().execute()
+    portfolio_response = supabase.table("portfolio").select("*").eq("portfolio_id", p_id).maybe_single().execute()
     portfolio_data = portfolio_response.data
 
     if user_data:
@@ -66,7 +66,47 @@ def markets():
 
 @app.route('/portfolio')
 def portfolio():
-    return render_template('portfolio.html')
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('index'))
+    
+    user_response = supabase.table("user").select("*").eq("user_id", user_id).maybe_single().execute()
+    user_data = user_response.data
+    
+    p_id = user_data.get('portfolio_id')
+    portfolio_response = supabase.table("portfolio").select("*").eq("portfolio_id", p_id).maybe_single().execute()
+    portfolio_data = portfolio_response.data
+    
+    return render_template('portfolio.html', user=user_data, portfolio=portfolio_data)
+
+@app.route('/api/get-mins-portfolio-performance')
+def get_mins_portfolio_performance():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    # 1. Get Portfolio ID from user table
+    user_data = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
+    if not user_data.data:
+        return jsonify({"error": "No portfolio found"}), 404
+        
+    p_id = user_data.data.get('portfolio_id')
+
+    # 2. Get the latest Daily Snapshot
+    daily_data = supabase.table("daily_snapshot").select("snapshot_id").eq("portfolio_id", p_id).order("created_at", desc=True).limit(1).maybe_single().execute()
+    if not daily_data.data:
+        return jsonify([]) # Return empty list if no data today
+
+    snapshot_id = daily_data.data.get('snapshot_id')
+
+    # 3. Get all minute records for this snapshot
+    mins_response = supabase.table("mins_snapshot") \
+        .select("portfolio_value, recorded_at") \
+        .eq("snapshot_id", snapshot_id) \
+        .order("recorded_at", desc=False) \
+        .execute()
+
+    return jsonify(mins_response.data)
 
 @app.route('/news')
 def news():
@@ -111,6 +151,10 @@ def get_market_summary():
             print(f"Error fetching {name}: {e}")
             
     return jsonify(summary_data)
+
+@app.template_filter('format_currency')
+def format_currency(value):
+    return "{:,.2f}".format(value)
 
 if __name__ == '__main__':
     app.run(debug=True)

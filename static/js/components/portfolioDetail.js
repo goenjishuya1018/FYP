@@ -78,14 +78,14 @@ class PortfolioDetail {
     }
     
     updateSummary(summary) {
-        document.getElementById('totalValue').textContent = 
-            Helpers.formatCurrency(summary.totalValue);
+        // document.getElementById('totalValue').textContent = 
+        //     Helpers.formatCurrency(summary.totalValue);
         
-        const dailyChange = summary.dailyChange;
-        const changeElement = document.getElementById('dailyChange');
-        changeElement.textContent = 
-            `${dailyChange.amount >= 0 ? '+' : ''}${Helpers.formatCurrency(dailyChange.amount)} (${dailyChange.percent >= 0 ? '+' : ''}${dailyChange.percent}%)`;
-        changeElement.className = dailyChange.amount >= 0 ? 'change-info positive' : 'change-info negative';
+        // const dailyChange = summary.dailyChange;
+        // const changeElement = document.getElementById('dailyChange');
+        // changeElement.textContent = 
+        //     `${dailyChange.amount >= 0 ? '+' : ''}${Helpers.formatCurrency(dailyChange.amount)} (${dailyChange.percent >= 0 ? '+' : ''}${dailyChange.percent}%)`;
+        // changeElement.className = dailyChange.amount >= 0 ? 'change-info positive' : 'change-info negative';
         
         // Update dividend metrics
         const metrics = summary.dividendMetrics;

@@ -41,7 +41,8 @@
                         </div>
                         <div class="card-content">
                             <div class="amount" id="totalValue">${{ portfolio.market_value }}</div>
-                            <div class="change positive" id="totalChange">+${{ portfolio.market_value - portfolio.start_value }}</div>
+                            {% set change = portfolio.market_value - portfolio.start_value %}
+                            <div class="change positive" id="totalChange">{{ "+$" if change >= 0 else "-$" }}{{ change|abs|format_currency }}</div>
                         </div>
                     </div>
                     
@@ -50,8 +51,9 @@
                             <h3>Today's Change</h3>
                         </div>
                         <div class="card-content">
-                            <div class="amount" id="dailyChange">+$1,245.30</div>
-                            <div class="change positive">+0.98%</div>
+                            {% set change = portfolio.market_value - portfolio.yesterday_value %}
+                            <div class="amount" id="dailyChange">{{ "$" if change >= 0 else "-$" }}{{ change|abs|format_currency }}</div>
+                            <div class="change positive">{{ "+" if change >= 0 else "" }}{{ (change / portfolio.yesterday_value * 100)|round(2) }}%</div>
                         </div>
                     </div>
                     
