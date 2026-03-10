@@ -152,6 +152,56 @@ def get_market_summary():
             
     return jsonify(summary_data)
 
+@app.route('/api/portfolio/holdings')
+def get_holdings():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    user_data = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
+    p_id = user_data.data.get('portfolio_id')
+
+    # 1. Get the holdings from Supabase
+    # Assuming your table is called 'holdings' and has columns: symbol, quantity, avg_cost
+    holdings_response = supabase.table("holding").select("*").eq("portfolio_id", p_id).execute()
+    holdings = holdings_response.data
+
+    # 2. Enrich holdings with real-time prices
+    enriched_holdings = []
+    count = 0
+
+    for item in holdings:
+        try:
+            # Fetch current price from Finnhub (or your preferred API)
+            quote = finnhub_client.quote(item['symbol'])
+            current_price = quote['c'] # 'c' is Current Price
+            
+            market_value = item['quantity'] * current_price
+            total_gain = market_value - (item['quantity'] * item['avg_cost'])
+            gain_percent = (total_gain / (item['quantity'] * item['avg_cost'])) * 100
+
+            enriched_holdings.append({
+                "id": count,
+                "symbol": item['symbol'],
+                "name": item.get('name', item['symbol']), # Use name if stored, else symbol
+                "shares": item['quantity'],
+                "avgCost": item['avg_cost'],
+                "marketPrice": current_price,
+                "dailyChange": quote['d'], # 'd' is daily change
+                "marketValue": market_value,
+                "totalGain": total_gain,
+                "totalGainPercent": gain_percent,
+                "dailyChangePercent": quote['dp'], # 'dp' is daily percent change
+                "dividendYield": 0.00,
+                "sector": 'Automotive',
+                "currency": 'USD'
+            })
+            count += 1
+        except Exception as e:
+            print(f"Error fetching price for {item['symbol']}: {e}")
+
+    return jsonify(enriched_holdings) 
+
 @app.template_filter('format_currency')
 def format_currency(value):
     return "{:,.2f}".format(value)

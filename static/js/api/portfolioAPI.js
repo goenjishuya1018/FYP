@@ -32,123 +32,138 @@ class PortfolioAPI {
             throw error;
         }
     }
-    
+
     static async getHoldings() {
         try {
-            // Mock holdings data
-            await this.simulateDelay();
-            return [
-                {
-                    id: 1,
-                    symbol: 'TSLA',
-                    name: 'Tesla Inc.',
-                    shares: 6,
-                    avgCost: 180.50,
-                    marketPrice: 245.33,
-                    dailyChange: 15.67,
-                    dailyChangePercent: 6.83,
-                    marketValue: 1471.98,
-                    totalGain: 389.00,
-                    dividendYield: 0.00,
-                    sector: 'Automotive',
-                    currency: 'USD'
-                },
-                {
-                    id: 2,
-                    symbol: 'RYA',
-                    name: 'Ryanair Holdings',
-                    shares: 60,
-                    avgCost: 18.50,
-                    marketPrice: 22.73,
-                    dailyChange: -0.45,
-                    dailyChangePercent: -1.94,
-                    marketValue: 1363.80,
-                    totalGain: 253.80,
-                    dividendYield: 1.42,
-                    sector: 'Airlines',
-                    currency: 'EUR'
-                },
-                {
-                    id: 3,
-                    symbol: 'ETH-USD',
-                    name: 'Ethereum',
-                    shares: 0.5,
-                    avgCost: 3200.00,
-                    marketPrice: 3825.50,
-                    dailyChange: 125.25,
-                    dailyChangePercent: 3.38,
-                    marketValue: 1912.75,
-                    totalGain: 312.75,
-                    dividendYield: 0.00,
-                    sector: 'Cryptocurrency',
-                    currency: 'USD'
-                },
-                {
-                    id: 4,
-                    symbol: 'VIC',
-                    name: 'Vinci',
-                    shares: 2,
-                    avgCost: 105.75,
-                    marketPrice: 112.88,
-                    dailyChange: 1.25,
-                    dailyChangePercent: 1.12,
-                    marketValue: 225.76,
-                    totalGain: 14.26,
-                    dividendYield: 3.85,
-                    sector: 'Construction',
-                    currency: 'EUR'
-                },
-                {
-                    id: 5,
-                    symbol: 'MSFT',
-                    name: 'Microsoft',
-                    shares: 2,
-                    avgCost: 295.40,
-                    marketPrice: 378.85,
-                    dailyChange: 5.23,
-                    dailyChangePercent: 1.40,
-                    marketValue: 757.70,
-                    totalGain: 166.90,
-                    dividendYield: 0.73,
-                    sector: 'Technology',
-                    currency: 'USD'
-                },
-                {
-                    id: 6,
-                    symbol: '0700',
-                    name: 'Tencent Holdings',
-                    shares: 10,
-                    avgCost: 320.50,
-                    marketPrice: 297.61,
-                    dailyChange: -3.45,
-                    dailyChangePercent: -1.14,
-                    marketValue: 2976.10,
-                    totalGain: -229.00,
-                    dividendYield: 0.88,
-                    sector: 'Technology',
-                    currency: 'HKD'
-                },
-                {
-                    id: 7,
-                    symbol: 'PG',
-                    name: 'Procter & Gamble',
-                    shares: 5,
-                    avgCost: 145.80,
-                    marketPrice: 156.25,
-                    dailyChange: 0.88,
-                    dailyChangePercent: 0.57,
-                    marketValue: 781.25,
-                    totalGain: 52.25,
-                    dividendYield: 2.42,
-                    sector: 'Consumer Goods',
-                    currency: 'USD'
-                }
-            ];
+            // Fetch from your Flask backend
+            const response = await fetch('/api/portfolio/holdings');
+            if (!response.ok) throw new Error('Failed to fetch holdings');
+            
+            const data = await response.json();
+            // Return the real data from your database/API
+            return data; 
         } catch (error) {
             console.error('Error fetching holdings:', error);
-            throw error;
+            return []; // Return empty array so the UI doesn't crash
         }
     }
+    
+    // static async getHoldings2() {
+    //     try {
+    //         // Mock holdings data
+    //         await this.simulateDelay();
+    //         return [
+    //             {
+    //                 id: 1,
+    //                 symbol: 'TSLA',
+    //                 name: 'Tesla Inc.',
+    //                 shares: 6,
+    //                 avgCost: 180.50,
+    //                 marketPrice: 245.33,
+    //                 dailyChange: 15.67,
+    //                 dailyChangePercent: 6.83,
+    //                 marketValue: 1471.98,
+    //                 totalGain: 389.00,
+    //                 dividendYield: 0.00,
+    //                 sector: 'Automotive',
+    //                 currency: 'USD'
+    //             },
+    //             {
+    //                 id: 2,
+    //                 symbol: 'RYA',
+    //                 name: 'Ryanair Holdings',
+    //                 shares: 60,
+    //                 avgCost: 18.50,
+    //                 marketPrice: 22.73,
+    //                 dailyChange: -0.45,
+    //                 dailyChangePercent: -1.94,
+    //                 marketValue: 1363.80,
+    //                 totalGain: 253.80,
+    //                 dividendYield: 1.42,
+    //                 sector: 'Airlines',
+    //                 currency: 'EUR'
+    //             },
+    //             {
+    //                 id: 3,
+    //                 symbol: 'ETH-USD',
+    //                 name: 'Ethereum',
+    //                 shares: 0.5,
+    //                 avgCost: 3200.00,
+    //                 marketPrice: 3825.50,
+    //                 dailyChange: 125.25,
+    //                 dailyChangePercent: 3.38,
+    //                 marketValue: 1912.75,
+    //                 totalGain: 312.75,
+    //                 dividendYield: 0.00,
+    //                 sector: 'Cryptocurrency',
+    //                 currency: 'USD'
+    //             },
+    //             {
+    //                 id: 4,
+    //                 symbol: 'VIC',
+    //                 name: 'Vinci',
+    //                 shares: 2,
+    //                 avgCost: 105.75,
+    //                 marketPrice: 112.88,
+    //                 dailyChange: 1.25,
+    //                 dailyChangePercent: 1.12,
+    //                 marketValue: 225.76,
+    //                 totalGain: 14.26,
+    //                 dividendYield: 3.85,
+    //                 sector: 'Construction',
+    //                 currency: 'EUR'
+    //             },
+    //             {
+    //                 id: 5,
+    //                 symbol: 'MSFT',
+    //                 name: 'Microsoft',
+    //                 shares: 2,
+    //                 avgCost: 295.40,
+    //                 marketPrice: 378.85,
+    //                 dailyChange: 5.23,
+    //                 dailyChangePercent: 1.40,
+    //                 marketValue: 757.70,
+    //                 totalGain: 166.90,
+    //                 dividendYield: 0.73,
+    //                 sector: 'Technology',
+    //                 currency: 'USD'
+    //             },
+    //             {
+    //                 id: 6,
+    //                 symbol: '0700',
+    //                 name: 'Tencent Holdings',
+    //                 shares: 10,
+    //                 avgCost: 320.50,
+    //                 marketPrice: 297.61,
+    //                 dailyChange: -3.45,
+    //                 dailyChangePercent: -1.14,
+    //                 marketValue: 2976.10,
+    //                 totalGain: -229.00,
+    //                 dividendYield: 0.88,
+    //                 sector: 'Technology',
+    //                 currency: 'HKD'
+    //             },
+    //             {
+    //                 id: 7,
+    //                 symbol: 'PG',
+    //                 name: 'Procter & Gamble',
+    //                 shares: 5,
+    //                 avgCost: 145.80,
+    //                 marketPrice: 156.25,
+    //                 dailyChange: 0.88,
+    //                 dailyChangePercent: 0.57,
+    //                 marketValue: 781.25,
+    //                 totalGain: 52.25,
+    //                 dividendYield: 2.42,
+    //                 sector: 'Consumer Goods',
+    //                 currency: 'USD'
+    //             }
+    //         ];
+    //     } catch (error) {
+    //         console.error('Error fetching holdings:', error);
+    //         throw error;
+    //     }
+    // }
     
     static async getAssetAllocation() {
         try {
