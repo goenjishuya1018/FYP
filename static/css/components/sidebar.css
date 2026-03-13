@@ -1,3 +1,4 @@
+/* sidebar.css */
 .sidebar {
     position: fixed;
     left: 0;
@@ -9,6 +10,24 @@
     padding: 24px 0;
     z-index: 1000;
     overflow-y: auto;
+    transition: transform 0.3s ease;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 0 !important;
+        width: 100%;
+    }
 }
 
 .sidebar-header {
@@ -65,4 +84,29 @@
 
 .nav-text {
     font-weight: 500;
+}
+
+/* Mobile overlay when sidebar is open */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .sidebar-overlay.active {
+        display: block;
+    }
 }

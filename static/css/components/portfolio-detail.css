@@ -1,3 +1,4 @@
+/* portfolio-detail.css */
 .portfolio-detail-wrapper {
     min-height: 100vh;
     background: var(--bg-gray);
@@ -456,7 +457,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: var(--bg-white);
     font-weight: 600;
     font-size: 0.75rem;
 }
@@ -696,10 +697,12 @@
     align-items: center;
     justify-content: center;
     border-radius: 4px;
+    transition: all 0.2s;
 }
 
 .close-btn:hover {
     background: var(--bg-gray);
+    color: var(--text-primary);
 }
 
 .modal-body {
@@ -746,6 +749,8 @@
     border-radius: var(--border-radius);
     font-size: 1rem;
     transition: all 0.2s;
+    background: var(--bg-white);
+    color: var(--text-primary);
 }
 
 .form-group input:focus,
@@ -754,6 +759,10 @@
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-group input[type="date"] {
+    color-scheme: var(--color-scheme);
 }
 
 .transaction-summary {
@@ -776,6 +785,107 @@
     gap: 12px;
     padding: 24px;
     border-top: 1px solid var(--border-color);
+    background: var(--bg-white);
+}
+
+/* Radio and Checkbox styles for forms */
+.radio-label,
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.radio-label input[type="radio"],
+.checkbox-label input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+    padding: 0;
+    accent-color: var(--primary-color);
+}
+
+.condition-group {
+    display: flex;
+    gap: 16px;
+    padding: 8px 0;
+}
+
+.checkbox-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Search results dropdown */
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.search-results.active {
+    display: block;
+}
+
+.search-result-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.search-result-item:hover {
+    background: var(--bg-gray);
+}
+
+.search-result-item .symbol {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.search-result-item .name {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-left: 8px;
+}
+
+/* Current price info */
+.current-price-info {
+    background: var(--bg-gray);
+    padding: 16px;
+    border-radius: var(--border-radius);
+    margin-top: 16px;
+}
+
+.price-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.price-info-row:last-child {
+    margin-bottom: 0;
+}
+
+.price-info-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.price-info-value {
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
 /* Responsive Design */
@@ -805,6 +915,14 @@
     .holdings-table td {
         padding: 8px;
     }
+    
+    .modal-footer {
+        flex-direction: column;
+    }
+    
+    .modal-footer button {
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -827,6 +945,10 @@
     
     .search-box {
         width: 100%;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -870,23 +992,21 @@
 
 .btn-secondary {
     background: transparent;
-    color: var(--text-secondary);
     border: 1px solid var(--border-color);
-    padding: 10px 20px;
+    color: var(--text-secondary);
+    padding: 8px 16px;
     border-radius: var(--border-radius);
-    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
     font-size: 0.875rem;
+    transition: all 0.2s;
 }
 
 .btn-secondary:hover {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-    transform: translateY(-1px);
+    background: var(--bg-gray);
+    border-color: var(--text-muted);
 }
 
-/* Update chart action buttons to match market.html time buttons */
+/* Update chart action buttons */
 .chart-action {
     padding: 8px 16px;
     border: 1px solid var(--border-color);
@@ -932,7 +1052,19 @@
 
 .filter-btn.active {
     background: var(--primary-color);
-    color: white;
+    color: var(--bg-white);
     border-color: var(--primary-color);
 }
 
+/* Dark mode color scheme support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-scheme: dark;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --color-scheme: light;
+    }
+}
