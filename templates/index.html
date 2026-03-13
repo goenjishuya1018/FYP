@@ -12,6 +12,9 @@
 </head>
 <body>
     <div class="app-container">
+
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
+        
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="sidebar-header">
@@ -56,8 +59,11 @@
             <!-- Header -->
             <header class="main-header">
                 <div class="header-left">
-                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
-                    <div class="date-display" id="currentDate"></div>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileSidebar()">☰</button>
+                    <div>
+                        <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                        <div class="date-display" id="currentDate"></div>
+                    </div>
                 </div>
                 
                 <div class="header-right">
@@ -85,6 +91,56 @@
             </div>
         </main>
     </div>
+<script>
+    // Mobile sidebar toggle functions
+    function toggleMobileSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        if (window.innerWidth <= 768) {
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('active');
+            
+            // Prevent body scrolling when sidebar is open
+            if (sidebar.classList.contains('mobile-open')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+    }
     
+    function closeMobileSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        if (window.innerWidth <= 768) {
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+    
+    // Close sidebar when clicking on a nav item (mobile)
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                closeMobileSidebar();
+            }
+        });
+    });
+    
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+</script>   
 </body>
 </html>
