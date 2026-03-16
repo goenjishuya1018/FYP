@@ -37,6 +37,75 @@ def sync_portfolio_total(p_id):
         print(f"Sync Error: {e}")
         return None
 
+# function to sync the real-time market value of the portfolio, called on dashboard load and every 5 minutes while on the dashboard page. It uses the current price of each holding to calculate the total market value and updates the portfolio table in Supabase.
+def sync_portfolio_market_value(p_id):
+    try:
+        # 1. Get all holdings for this portfolio
+        holdings_res = supabase.table("holdings").select("*").eq("portfolio_id", p_id).execute()
+        holdings = holdings_res.data
+        
+        if not holdings:
+            # If no holdings, market value is 0
+            supabase.table("portfolio").update({"market_value": 0}).eq("portfolio_id", p_id).execute()
+            return 0
+
+        total_market_value = 0
+        
+        # 2. Loop through holdings and get instant prices
+        for item in holdings:
+            symbol = item['symbol']
+            quantity = float(item['quantity'])
+            
+            try:
+                # Fetch instant price from API
+                quote = finnhub_client.quote(symbol)
+                current_price = quote['c']  # 'c' is the current price
+                
+                # If API fails (returns 0), fallback to average cost so the total isn't ruined
+                if current_price == 0:
+                    current_price = float(item['avg_cost'])
+                
+                total_market_value += (quantity * current_price)
+                
+            except Exception as e:
+                print(f"Error fetching price for {symbol}: {e}")
+                total_market_value += (quantity * float(item['avg_cost']))
+
+        # 3. Update the Portfolio table with the real-time total
+        supabase.table("portfolio").update({
+            "market_value": total_market_value
+        }).eq("portfolio_id", p_id).execute()
+        
+        return total_market_value
+
+    except Exception as e:
+        print(f"Major Sync Error: {e}")
+        return None
+
+@app.route('/api/portfolio/sync', methods=['POST'])
+def sync_portfolio():
+    user_id = session.get('user_id')
+    user_data = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
+    p_id = user_data.data.get('portfolio_id')
+    
+    new_total = sync_portfolio_market_value(p_id)
+    return jsonify({"success": True, "total": new_total})
+
+@app.route('/api/dashboard/summary', methods=['GET'])
+def get_dashboard_summary():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    # 1. Get the portfolio_id linked to this user
+    user_res = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
+    p_id = user_res.data.get('portfolio_id')
+
+    # 2. Fetch the summary data from the portfolio table
+    portfolio_res = supabase.table("portfolio").select("*").eq("portfolio_id", p_id).maybe_single().execute()
+    
+    return jsonify(portfolio_res.data)
+
 @app.route('/login', methods=['POST'])
 def login():
     email_input = request.form.get("email")
@@ -100,34 +169,34 @@ def portfolio():
     
     return render_template('portfolio.html', user=user_data, portfolio=portfolio_data)
 
-@app.route('/api/get-mins-portfolio-performance')
-def get_mins_portfolio_performance():
-    user_id = session.get('user_id')
-    if not user_id:
-        return jsonify({"error": "Unauthorized"}), 401
+# @app.route('/api/get-mins-portfolio-performance')
+# def get_mins_portfolio_performance():
+#     user_id = session.get('user_id')
+#     if not user_id:
+#         return jsonify({"error": "Unauthorized"}), 401
     
-    # 1. Get Portfolio ID from user table
-    user_data = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
-    if not user_data.data:
-        return jsonify({"error": "No portfolio found"}), 404
+#     # 1. Get Portfolio ID from user table
+#     user_data = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
+#     if not user_data.data:
+#         return jsonify({"error": "No portfolio found"}), 404
         
-    p_id = user_data.data.get('portfolio_id')
+#     p_id = user_data.data.get('portfolio_id')
 
-    # 2. Get the latest Daily Snapshot
-    daily_data = supabase.table("daily_snapshot").select("snapshot_id").eq("portfolio_id", p_id).order("created_at", desc=True).limit(1).maybe_single().execute()
-    if not daily_data.data:
-        return jsonify([]) # Return empty list if no data today
+#     # 2. Get the latest Daily Snapshot
+#     daily_data = supabase.table("daily_snapshot").select("snapshot_id").eq("portfolio_id", p_id).order("created_at", desc=True).limit(1).maybe_single().execute()
+#     if not daily_data.data:
+#         return jsonify([]) # Return empty list if no data today
 
-    snapshot_id = daily_data.data.get('snapshot_id')
+#     snapshot_id = daily_data.data.get('snapshot_id')
 
-    # 3. Get all minute records for this snapshot
-    mins_response = supabase.table("mins_snapshot") \
-        .select("portfolio_value, recorded_at") \
-        .eq("snapshot_id", snapshot_id) \
-        .order("recorded_at", desc=False) \
-        .execute()
+#     # 3. Get all minute records for this snapshot
+#     mins_response = supabase.table("mins_snapshot") \
+#         .select("portfolio_value, recorded_at") \
+#         .eq("snapshot_id", snapshot_id) \
+#         .order("recorded_at", desc=False) \
+#         .execute()
 
-    return jsonify(mins_response.data)
+#     return jsonify(mins_response.data)
 
 @app.route('/news')
 def news():
