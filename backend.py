@@ -59,7 +59,6 @@ def dashboard():
     if user_data:
         return render_template('dashboard.html', user=user_data, portfolio=portfolio_data)
 
-
 @app.route('/markets')
 def markets():
     return render_template('markets.html')
@@ -163,7 +162,7 @@ def get_holdings():
 
     # 1. Get the holdings from Supabase
     # Assuming your table is called 'holdings' and has columns: symbol, quantity, avg_cost
-    holdings_response = supabase.table("holding").select("*").eq("portfolio_id", p_id).execute()
+    holdings_response = supabase.table("holdings").select("*").eq("portfolio_id", p_id).execute()
     holdings = holdings_response.data
 
     # 2. Enrich holdings with real-time prices
@@ -205,6 +204,77 @@ def get_holdings():
 @app.template_filter('format_currency')
 def format_currency(value):
     return "{:,.2f}".format(value)
+
+@app.route('/api/add-transaction', methods=['POST'])
+def add_transaction():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    user_response = supabase.table("user").select("*").eq("user_id", user_id).maybe_single().execute()
+    user_data = user_response.data
+
+    p_id = user_data.get('portfolio_id')
+    data = request.get_json()
+    symbol = data['symbol'].upper()
+    
+    txn_data = {
+        "portfolio_id": p_id,
+        "type": data['type'],
+        "symbol": symbol,
+        "shares": data['shares'],
+        "price": data['price'],
+        "transaction_date": data['date'],
+        "notes": data['notes']
+    }
+    supabase.table("transactions").insert(txn_data).execute()
+
+    holdings_query = supabase.table("holdings") \
+        .select("*") \
+        .eq("portfolio_id", p_id) \
+        .eq("symbol", symbol) \
+        .execute()
+
+    existing_data = holdings_query.data[0] if holdings_query.data else None
+
+    if data['type'].lower() == 'buy':
+        if existing_data:
+            # Update existing: Calculate new average cost and total shares
+            new_shares = existing_data['quantity'] + data['shares']
+            new_total_cost = (existing_data['quantity'] * existing_data['avg_cost']) + (data['shares'] * data['price'])
+            new_avg_cost = new_total_cost / new_shares
+            
+            supabase.table("holdings").update({
+                "quantity": new_shares,
+                "avg_cost": new_avg_cost
+            }).eq("portfolio_id", p_id).eq("symbol", symbol).execute()
+        else:
+            # Insert new holding
+            supabase.table("holdings").insert({
+                "portfolio_id": p_id,
+                "symbol": symbol,
+                "quantity": data['shares'],
+                "avg_cost": data['price']
+            }).execute()
+
+    elif data['type'].lower() == 'sell':
+        if not existing_data:
+            return jsonify({"error": "You do not own this asset"}), 400
+          
+        new_shares = existing_data['quantity'] - data['shares']
+        if new_shares < 0:
+            return jsonify({"error": "Not enough shares to sell"}), 400
+        
+        if new_shares == 0:
+            # Remove holding if all shares sold
+            supabase.table("holdings").delete().eq("portfolio_id", p_id).eq("symbol", symbol).execute()
+            # Update holding with reduced shares (average cost remains the same)
+        else:
+            supabase.table("holdings").update({
+                "quantity": new_shares
+            }).eq("portfolio_id", p_id).eq("symbol", symbol).execute()
+        
+    return jsonify({"success": True})
 
 if __name__ == '__main__':
     app.run(debug=True)

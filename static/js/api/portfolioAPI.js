@@ -315,27 +315,49 @@ class PortfolioAPI {
         }
     }
     
+    // static async addTransaction(transaction) {
+    //     try {
+    //         // In real implementation:
+    //         // const response = await fetch(`${this.BASE_URL}/transactions`, {
+    //         //     method: 'POST',
+    //         //     headers: {
+    //         //         'Authorization': `Bearer ${this.API_KEY}`,
+    //         //         'Content-Type': 'application/json'
+    //         //     },
+    //         //     body: JSON.stringify(transaction)
+    //         // });
+    //         // return await response.json();
+            
+    //         await this.simulateDelay();
+    //         return { success: true, id: Date.now(), ...transaction };
+    //     } catch (error) {
+    //         console.error('Error adding transaction:', error);
+    //         throw error;
+    //     }
+    // }
+    
     static async addTransaction(transaction) {
         try {
-            // In real implementation:
-            // const response = await fetch(`${this.BASE_URL}/transactions`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Authorization': `Bearer ${this.API_KEY}`,
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify(transaction)
-            // });
-            // return await response.json();
-            
-            await this.simulateDelay();
-            return { success: true, id: Date.now(), ...transaction };
+            const response = await fetch('/api/add-transaction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(transaction)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to add transaction');
+            }
+
+            return await response.json();
         } catch (error) {
-            console.error('Error adding transaction:', error);
+            console.error('Error in addTransaction API:', error);
             throw error;
         }
     }
-    
+
     static async searchAssets(query) {
         try {
             // Mock search results
