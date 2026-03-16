@@ -276,5 +276,24 @@ def add_transaction():
         
     return jsonify({"success": True})
 
+@app.route('/api/portfolio/transactions')
+def get_transactions():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    # 1. Get Portfolio ID
+    user_data = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
+    p_id = user_data.data.get('portfolio_id')
+
+    # 2. Get Transactions
+    response = supabase.table("transactions") \
+        .select("*") \
+        .eq("portfolio_id", p_id) \
+        .order("transaction_date", desc=True) \
+        .execute()
+
+    return jsonify(response.data)
+
 if __name__ == '__main__':
     app.run(debug=True)

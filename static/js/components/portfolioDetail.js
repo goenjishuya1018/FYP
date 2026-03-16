@@ -68,6 +68,7 @@ class PortfolioDetail {
             
             this.renderHoldings();
             this.updateAllocationDetails();
+            await this.renderTransactionHistory();
             
         } catch (error) {
             console.error('Error loading portfolio data:', error);
@@ -362,6 +363,47 @@ class PortfolioDetail {
             console.error('Error loading dividend calendar:', error);
         }
     }
+
+    async renderTransactionHistory() {
+        const timelineContainer = document.querySelector('.dividend-timeline');
+        if (!timelineContainer) return;
+
+        const transactions = await PortfolioAPI.getTransactions();
+        
+        // 1. Group transactions by Month (e.g., "Dec 2024")
+        const grouped = transactions.reduce((groups, txn) => {
+            const date = new Date(txn.transaction_date);
+            const monthYear = date.toLocaleString('default', { month: 'short', year: 'numeric' });
+            
+            if (!groups[monthYear]) groups[monthYear] = [];
+            groups[monthYear].push(txn);
+            return groups;
+        }, {});
+
+        // 2. Generate HTML
+        timelineContainer.innerHTML = Object.entries(grouped).map(([month, items]) => `
+            <div class="timeline-item">
+                <div class="timeline-date">${month}</div>
+                <div class="timeline-content">
+                    ${items.map(item => `
+                        <div class="dividend-event">
+                            <div class="dividend-company">
+                                <div class="company-logo">${item.symbol}</div>
+                                <div class="company-info">
+                                    <div class="company-name">${item.type.toUpperCase()}</div>
+                                    <div class="dividend-amount">$${item.price} per share</div>
+                                </div>
+                            </div>
+                            <div class="dividend-details">
+                                <div class="dividend-shares">${item.shares} shares</div>
+                                <div class="dividend-total">$${(item.shares * item.price).toFixed(2)} total</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+    }
     
     renderDividendCalendar(calendar) {
         // Update each month
@@ -608,6 +650,8 @@ class PortfolioDetail {
         }, 5000);
     }
 }
+
+
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {

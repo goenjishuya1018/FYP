@@ -336,6 +336,17 @@ class PortfolioAPI {
     //     }
     // }
     
+    static async getTransactions() {
+        try {
+            const response = await fetch('/api/portfolio/transactions');
+            if (!response.ok) throw new Error('Failed to fetch transactions');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching transactions:', error);
+            return [];
+        }
+    }
+
     static async addTransaction(transaction) {
         try {
             const response = await fetch('/api/add-transaction', {
