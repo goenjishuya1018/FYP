@@ -1,3 +1,4 @@
+/* header.css */
 .main-header {
     background: var(--bg-white);
     border-bottom: 1px solid var(--border-color);
@@ -5,6 +6,38 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+/* Mobile menu button */
+.mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--border-radius);
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    margin-right: 12px;
+}
+
+.mobile-menu-btn:hover {
+    background: var(--bg-gray);
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+    }
+    
+    .header-left {
+        display: flex;
+        align-items: center;
+    }
 }
 
 .header-left .page-title {
@@ -23,6 +56,26 @@
     display: flex;
     align-items: center;
     gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .header-right {
+        gap: 12px;
+    }
+    
+    .user-name {
+        display: none;
+    }
+    
+    .search-box {
+        width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-box {
+        width: 150px;
+    }
 }
 
 .search-box {
@@ -55,32 +108,29 @@
     color: var(--text-muted);
 }
 
-/* */
-/* Styling for the suggestions box */
+/* Suggestions box */
 .suggestions-box {
-  position: absolute; /* Position relative to .search-container */
-  top: 100%; /* Position below the input field */
-  left: 0;
-  width: 100%;
-  border: 1px solid #eee;
-  border-top: none;
-  background-color: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  z-index: 100; /* Ensure suggestions appear above other content */
-  display: none; /* Hidden by default, shown with JavaScript */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    border: 1px solid #eee;
+    border-top: none;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    display: none;
 }
 
-/* Styling for individual suggestion items (will be added via JavaScript) */
 .suggestions-box div {
-  padding: 10px;
-  cursor: pointer;
+    padding: 10px;
+    cursor: pointer;
 }
 
 .suggestions-box div:hover {
-  background-color: #f0f0f0;
+    background-color: #f0f0f0;
 }
 
-/* */
 .user-menu {
     display: flex;
     align-items: center;

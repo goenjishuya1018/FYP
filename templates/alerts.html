@@ -1,0 +1,378 @@
+<!-- alerts.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts & Calendar - Theta Investment Hub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components/alerts.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/api/alertsApi.js"></script>
+    <script src="js/components/alerts.js"></script>
+    <script src="js/utils/theme.js"></script>
+    <script src="js/app.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="alerts-wrapper">
+        <!-- Header -->
+        <!-- <header class="alerts-header">
+            <div class="header-left">
+                <h1 class="page-title">Alerts & Calendar</h1>
+                <div class="date-display" id="currentDate"></div>
+            </div>
+            <div class="header-right">
+                <button class="btn-primary" onclick="openCreateAlertModal()">+ Create Alert</button>
+                <button class="btn-outline" onclick="refreshAlerts()">🔄</button>
+            </div>
+        </header> -->
+
+        <!-- Main Content -->
+        <main class="alerts-content">
+            <!-- Alert Overview Cards -->
+            <section class="alert-overview">
+                <div class="overview-card">
+                    <div class="card-icon">🔔</div>
+                    <div class="card-info">
+                        <div class="card-label">Active Alerts</div>
+                        <div class="card-value" id="activeAlertsCount">8</div>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="card-icon">📅</div>
+                    <div class="card-info">
+                        <div class="card-label">Upcoming Events</div>
+                        <div class="card-value" id="upcomingEventsCount">12</div>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="card-icon">💰</div>
+                    <div class="card-info">
+                        <div class="card-label">Dividends This Month</div>
+                        <div class="card-value" id="dividendsThisMonth">5</div>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="card-icon">⚡</div>
+                    <div class="card-info">
+                        <div class="card-label">Triggered Today</div>
+                        <div class="card-value" id="triggeredToday">2</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Alerts and Calendar Grid -->
+            <div class="alerts-grid">
+                <!-- Price Alerts Section -->
+                <section class="alerts-section">
+                    <div class="section-header">
+                        <h2>Price Alerts</h2>
+                        <div class="section-actions">
+                            <select class="btn-secondary" id="alertFilter" onchange="filterAlerts()">
+                                <option value="all">All Alerts</option>
+                                <option value="active">Active</option>
+                                <option value="triggered">Triggered</option>
+                                <option value="expired">Expired</option>
+                            </select>
+                            <button class="btn-outline" onclick="openCreateAlertModal()">+ Create Alert</button>
+                        </div>
+                    </div>
+
+                    <!-- Alerts List -->
+                    <div class="alerts-list" id="alertsList">
+                        <!-- Alerts will be loaded here -->
+                    </div>
+
+                    <!-- Alert Statistics -->
+                    <div class="alert-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Success Rate</span>
+                            <span class="stat-value" id="successRate">78%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Avg. Trigger Time</span>
+                            <span class="stat-value" id="avgTriggerTime">3.2 days</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Most Alerted</span>
+                            <span class="stat-value" id="mostAlerted">AAPL</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Add Alert -->
+                <section class="quick-alert-section">
+                    <h2>Quick Alert</h2>
+                    <div class="quick-alert-form">
+                        <div class="form-group">
+                            <label for="quickSymbol">Stock Symbol</label>
+                            <input type="text" id="quickSymbol" placeholder="e.g., AAPL" list="stockSuggestions">
+                            <datalist id="stockSuggestions"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="quickPrice">Target Price ($)</label>
+                            <input type="number" id="quickPrice" placeholder="150.00" step="0.01">
+                        </div>
+                        <div class="form-conditions">
+                            <label class="condition-option">
+                                <input type="radio" name="quickCondition" value="above" checked> Above
+                            </label>
+                            <label class="condition-option">
+                                <input type="radio" name="quickCondition" value="below"> Below
+                            </label>
+                        </div>
+                        <button class="btn-primary" onclick="createQuickAlert()">Set Alert</button>
+                    </div>
+
+                    <!-- Suggested Alerts -->
+                    <div class="suggested-alerts">
+                        <h3>Suggested Alerts</h3>
+                        <div class="suggestion-list" id="suggestedAlerts">
+                            <!-- Suggestions loaded by JS -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Calendar Section -->
+            <section class="calendar-section">
+                <div class="section-header">
+                    <h2>Event Calendar</h2>
+                    <div class="calendar-filters">
+                        <button class="filter-btn active" data-filter="all">All Events</button>
+                        <button class="filter-btn" data-filter="dividend">Dividends</button>
+                        <button class="filter-btn" data-filter="ex-rights">Ex-Rights</button>
+                        <button class="filter-btn" data-filter="custom">Custom</button>
+                    </div>
+                </div>
+
+                <div class="calendar-container">
+                    <div id="calendar"></div>
+                </div>
+
+                <!-- Upcoming Events List -->
+                <div class="upcoming-events">
+                    <h3>Upcoming Events</h3>
+                    <div class="events-list" id="upcomingEventsList">
+                        <!-- Events loaded by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Events Section -->
+            <section class="my-events-section">
+                <div class="section-header">
+                    <h2>My Planned Events</h2>
+                    <button class="btn-outline" onclick="openCreateEventModal()">+ Add Event</button>
+                </div>
+
+                <div class="events-grid" id="myEventsList">
+                    <!-- Custom events loaded by JS -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Create Alert Modal -->
+    <div id="createAlertModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Price Alert</h2>
+                <button class="close-btn" onclick="closeCreateAlertModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="createAlertForm" onsubmit="return false">
+                    <div class="form-group">
+                        <label for="alertSymbol">Stock Symbol</label>
+                        <input type="text" id="alertSymbol" required placeholder="e.g., AAPL" autocomplete="off">
+                        <div class="search-results" id="symbolSearchResults"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="alertType">Alert Type</label>
+                        <select id="alertType">
+                            <option value="price">Price Alert</option>
+                            <option value="percentage">Percentage Change</option>
+                            <option value="volume">Volume Spike</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Condition</label>
+                            <div class="condition-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="condition" value="above" checked> Above
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="condition" value="below"> Below
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="targetPrice">Target Price ($)</label>
+                            <input type="number" id="targetPrice" step="0.01" placeholder="150.00">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expiration">Expiration</label>
+                        <select id="expiration">
+                            <option value="1d">1 Day</option>
+                            <option value="1w" selected>1 Week</option>
+                            <option value="1m">1 Month</option>
+                            <option value="3m">3 Months</option>
+                            <option value="never">Never</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notificationMethod">Notification Method</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="email" checked> Email
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="push" checked> Push
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="sms"> SMS
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="alertNote">Note (Optional)</label>
+                        <textarea id="alertNote" rows="2" placeholder="Add a note for this alert..."></textarea>
+                    </div>
+
+                    <div class="current-price-info" id="currentPriceInfo">
+                        <!-- Current price info loaded by JS -->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeCreateAlertModal()">Cancel</button>
+                <button class="btn-primary" onclick="createAlert()">Create Alert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Event Modal -->
+    <div id="createEventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Custom Event</h2>
+                <button class="close-btn" onclick="closeCreateEventModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="createEventForm" onsubmit="return false">
+                    <div class="form-group">
+                        <label for="eventSymbol">Stock Symbol</label>
+                        <input type="text" id="eventSymbol" placeholder="e.g., AAPL">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventTitle">Event Title </label>
+                        <input type="text" id="eventTitle" required placeholder="e.g., Sell Google at $150">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventType">Event Type</label>
+                        <select id="eventType">
+                            <option value="planned-sell">Planned Sell</option>
+                            <option value="planned-buy">Planned Buy</option>
+                            <option value="review">Portfolio Review</option>
+                            <option value="earnings">Earnings Watch</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventStart">Start Date</label>
+                            <input type="date" id="eventStart" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventEnd">End Date</label>
+                            <input type="date" id="eventEnd">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="targetPrice">Target Price ($)</label>
+                        <input type="number" id="eventTargetPrice" step="0.01" placeholder="150.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventColor">Event Color</label>
+                        <select id="eventColor">
+                            <option value="blue">Blue</option>
+                            <option value="green">Green</option>
+                            <option value="red">Red</option>
+                            <option value="purple">Purple</option>
+                            <option value="orange">Orange</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventDescription">Description</label>
+                        <textarea id="eventDescription" rows="3" placeholder="Add details about this event..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="eventReminder" checked> Set reminder 1 day before
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeCreateEventModal()">Cancel</button>
+                <button class="btn-primary" onclick="createCustomEvent()">Add Event</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Alert Modal -->
+    <div id="editAlertModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Alert</h2>
+                <button class="close-btn" onclick="closeEditAlertModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <!-- Similar to create form but with pre-filled data -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Triggered Notification -->
+    <div id="alertNotification" class="alert-notification" style="display: none;">
+        <div class="notification-content">
+            <div class="notification-icon">🔔</div>
+            <div class="notification-message">
+                <strong id="notificationTitle">Alert Triggered!</strong>
+                <span id="notificationBody">AAPL has reached $150.00</span>
+            </div>
+            <button class="notification-close" onclick="closeNotification()">×</button>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date for event form
+        document.getElementById('eventStart').valueAsDate = new Date();
+        
+        // Stock suggestions
+        const stockSuggestions = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'NVDA', 'META', 'JPM', 'V', 'WMT'];
+        const datalist = document.getElementById('stockSuggestions');
+        stockSuggestions.forEach(symbol => {
+            const option = document.createElement('option');
+            option.value = symbol;
+            datalist.appendChild(option);
+        });
+    </script>
+</body>
+</html>

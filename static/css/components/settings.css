@@ -2,6 +2,8 @@
 .settings-wrapper {
     min-height: 100vh;
     background: var(--bg-gray);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .settings-header {
@@ -11,9 +13,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.back-button {
+/* .back-button {
     background: transparent;
     border: none;
     color: var(--primary-color);
@@ -27,7 +31,7 @@
 
 .back-button:hover {
     background: var(--bg-gray);
-}
+} */
 
 .page-title {
     font-size: 1.875rem;
@@ -45,11 +49,13 @@
     display: flex;
     padding: 24px;
     gap: 24px;
-    max-width: 1400px;
+    max-width: 100%;
     margin: 0 auto;
+    box-sizing: border-box;
+    width: 100%;
 }
 
-/* Settings Sidebar */
+/* Settings Sidebar - Fixed on the left */
 .settings-sidebar {
     width: 260px;
     flex-shrink: 0;
@@ -59,9 +65,12 @@
     padding: 20px 0;
     height: fit-content;
     position: sticky;
-    top: 24px;
+    top: 0;
     display: flex;
     flex-direction: column;
+    align-self: flex-start;
+    max-height: calc(100vh - 150px);
+    overflow-y: auto;
 }
 
 .settings-nav {
@@ -80,6 +89,7 @@
     text-decoration: none;
     transition: all 0.2s;
     margin-bottom: 2px;
+    cursor: pointer;
 }
 
 .nav-item:hover {
@@ -136,13 +146,16 @@
     color: var(--text-muted);
 }
 
-/* Settings Panels */
+/* Settings Panels - Flexible content area */
 .settings-panels {
     flex: 1;
     background: var(--bg-white);
     border-radius: var(--border-radius-lg);
     border: 1px solid var(--border-color);
     padding: 32px;
+    overflow-y: auto;
+    /* max-height: calc(100vh - 150px); */
+    min-width: 0; /* Prevents flex overflow issues */
 }
 
 .settings-panel {
@@ -568,12 +581,13 @@ select:focus {
 }
 
 .modal-content {
-    background: white;
+    background: var(--bg-white);
     border-radius: 12px;
     max-width: 500px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
+    box-shadow: var(--shadow-lg);
 }
 
 .modal-content.small {
@@ -591,7 +605,7 @@ select:focus {
 
 .modal-header h2 {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     color: var(--text-primary);
 }
 
@@ -605,6 +619,17 @@ select:focus {
     gap: 12px;
     padding: 24px;
     border-top: 1px solid var(--border-color);
+    background: var(--bg-white);
+}
+
+@media (max-width: 480px) {
+    .modal-footer {
+        flex-direction: column;
+    }
+    
+    .modal-footer button {
+        width: 100%;
+    }
 }
 
 /* Account List in Modal */
@@ -698,10 +723,12 @@ select:focus {
     align-items: center;
     justify-content: center;
     border-radius: 4px;
+    transition: all 0.2s;
 }
 
 .close-btn:hover {
     background: var(--bg-gray);
+    color: var(--text-primary);
 }
 
 .btn-primary {
@@ -750,6 +777,10 @@ select:focus {
     cursor: pointer;
     transition: all 0.2s;
     font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
 }
 
 .btn-outline:hover {
@@ -799,20 +830,39 @@ select:focus {
 @media (max-width: 1024px) {
     .settings-content {
         flex-direction: column;
+        padding: 16px;
     }
     
     .settings-sidebar {
         width: 100%;
-        position: static;
+        position: sticky;
+        top: 0;
+        max-height: none;
     }
     
     .settings-nav {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
+    
+    .settings-panels {
+        max-height: none;
+        padding: 24px;
+    }
 }
 
 @media (max-width: 768px) {
+    .settings-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+    }
+    
+    .header-actions {
+        width: 100%;
+    }
+    
     .profile-header {
         flex-direction: column;
         align-items: center;
@@ -850,4 +900,47 @@ select:focus {
     .modal-footer {
         flex-direction: column;
     }
+    
+    .modal-footer button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-panels {
+        padding: 16px;
+    }
+    
+    .theme-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .legal-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .social-links {
+        flex-direction: column;
+    }
+}
+
+/* Iframe container fixes */
+.iframe-container {
+    height: calc(100vh - 80px); 
+    overflow: hidden;
+}
+
+#contentFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: auto;
 }
