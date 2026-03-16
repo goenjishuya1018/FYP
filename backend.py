@@ -14,6 +14,28 @@ SUPABASE_KEY = "sb_publishable_-zX-BOgqx6gXCesZDFiSIA_w27Ad04I"
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# function only executed after every transaction to keep the portfolio total in sync with the holdings
+def sync_portfolio_total(p_id):
+    try:
+        holdings_res = supabase.table("holdings").select("*").eq("portfolio_id", p_id).execute()
+        holdings = holdings_res.data
+        
+        total_value = 0
+        for item in holdings:
+            current_price = item.get('avg_cost') 
+            total_value += (float(item['quantity']) * float(current_price))
+
+        print("successfully calculated total portfolio value:", total_value)
+
+        # 2. Update the main portfolio table
+        supabase.table("portfolio").update({
+            "asset_value": total_value
+        }).eq("portfolio_id", p_id).execute()
+        
+        return total_value
+    except Exception as e:
+        print(f"Sync Error: {e}")
+        return None
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -111,7 +133,7 @@ def get_mins_portfolio_performance():
 def news():
     return render_template('news.html')
 
-@app.route('/api/market-news')
+@app.route('/api/news/market-news')
 def get_market_news():
     try:
         # Fetch general market news
@@ -123,7 +145,7 @@ def get_market_news():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-@app.route('/api/market-summary')
+@app.route('/api/news/market-summary')
 def get_market_summary():
     # Map your UI names to Finnhub symbols
     targets = {
@@ -205,7 +227,7 @@ def get_holdings():
 def format_currency(value):
     return "{:,.2f}".format(value)
 
-@app.route('/api/add-transaction', methods=['POST'])
+@app.route('/api/portfolio/add-transaction', methods=['POST'])
 def add_transaction():
     user_id = session.get('user_id')
     if not user_id:
@@ -273,6 +295,8 @@ def add_transaction():
             supabase.table("holdings").update({
                 "quantity": new_shares
             }).eq("portfolio_id", p_id).eq("symbol", symbol).execute()
+
+    sync_portfolio_total(p_id)
         
     return jsonify({"success": True})
 

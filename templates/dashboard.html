@@ -42,7 +42,7 @@
                         </div>
                         <div class="card-content">
                             <div class="amount" id="totalValue">${{ portfolio.market_value }}</div>
-                            {% set change = portfolio.market_value - portfolio.start_value %}
+                            {% set change = portfolio.market_value - portfolio.asset_value %}
                             <div class="change positive" id="totalChange">{{ "+$" if change >= 0 else "-$" }}{{ change|abs|format_currency }}</div>
                         </div>
                     </div>

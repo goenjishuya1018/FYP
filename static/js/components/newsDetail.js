@@ -80,7 +80,7 @@ class NewsManager {
 
             async updateMarketSummary() {
                 try {
-                    const response = await fetch('/api/market-summary');
+                    const response = await fetch('/api/news/market-summary');
                     const data = await response.json();
                     
                     const container = document.getElementById('marketSummaryContainer');
@@ -109,7 +109,7 @@ class NewsManager {
             async generateNewsData() {
                 try {
                     // 1. Call your Flask API
-                    const response = await fetch('/api/market-news');
+                    const response = await fetch('/api/news/market-news');
                     const rawNews = await response.json();
 
                     // 2. Clear existing 'all' data

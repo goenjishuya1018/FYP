@@ -136,7 +136,8 @@ class PortfolioDetail {
                 <td class="${holding.totalGain >= 0 ? 'positive' : 'negative'}">
                     ${holding.totalGain >= 0 ? '+' : ''}${Helpers.formatCurrency(holding.totalGain)}
                 </td>
-                <td>${holding.dividendYield.toFixed(2)}%</td>
+                <td class="change-cell ${holding.dailyChange >= 0 ? 'positive' : 'negative'}">
+                    ${holding.totalGain >= 0 ? '+' : ''}${Helpers.formatCurrency(holding.totalGain/holding.marketValue * 100)}%</td>
                 <td>
                     <div class="action-cell">
                         <button class="btn-icon-small" onclick="viewHolding('${holding.symbol}')" title="View Details">👁️</button>

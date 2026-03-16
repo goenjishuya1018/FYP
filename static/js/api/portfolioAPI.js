@@ -349,7 +349,7 @@ class PortfolioAPI {
 
     static async addTransaction(transaction) {
         try {
-            const response = await fetch('/api/add-transaction', {
+            const response = await fetch('/api/portfolio/add-transaction', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
