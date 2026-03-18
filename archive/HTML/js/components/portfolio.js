@@ -325,10 +325,10 @@ class PortfolioManager {
         `;
         
         modal.innerHTML = `
-            <div style="background:white;border-radius:12px;padding:24px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;">
+            <div style="background:var(--bg-white);border-radius:12px;padding:24px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
                     <h2 style="margin:0;">${holding.symbol} - ${holding.name}</h2>
-                    <button onclick="this.closest('.modal').remove()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">×</button>
+                    <button onclick="this.closest('.modal').remove()" style="background:none;border:none;color: var(--text-secondary);font-size:1.5rem;cursor:pointer;">×</button>
                 </div>
                 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
