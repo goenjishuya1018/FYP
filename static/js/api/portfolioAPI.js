@@ -4,7 +4,6 @@ class PortfolioAPI {
     
     static async getPortfolioSummary() {
         try {
-            // In a real implementation, this would call backend API
             // const response = await fetch(`${this.BASE_URL}/summary`, {
             //     headers: { 'Authorization': `Bearer ${this.API_KEY}` }
             // });
@@ -35,16 +34,14 @@ class PortfolioAPI {
 
     static async getHoldings() {
         try {
-            // Fetch from your Flask backend
             const response = await fetch('/api/portfolio/holdings');
             if (!response.ok) throw new Error('Failed to fetch holdings');
             
             const data = await response.json();
-            // Return the real data from your database/API
             return data; 
         } catch (error) {
             console.error('Error fetching holdings:', error);
-            return []; // Return empty array so the UI doesn't crash
+            return [];
         }
     }
     

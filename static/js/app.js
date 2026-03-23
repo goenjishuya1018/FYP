@@ -184,14 +184,12 @@ class QuinDashboard {
     }
 
     initializeCharts() {
-        // Performance chart will be initialized when data is loaded
         setTimeout(() => {
             this.updatePerformanceChart('1M');
         }, 1000);
     }
 
     updatePerformanceChart(timeRange) {
-        // This would typically fetch new data based on timeRange
         const performanceChart = new Chart(
             document.getElementById('performanceChart'), 
             Charts.createPerformanceChartConfig(timeRange)

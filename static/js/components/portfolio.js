@@ -33,7 +33,6 @@ class PortfolioManager {
     }
 
     async fetchHoldings() {
-        // Mock data - replace with actual API calls
         return [
             {
                 id: 1,
@@ -388,7 +387,6 @@ class PortfolioManager {
     }
 
     setupSorting() {
-        // This would implement sorting by different columns
         console.log('Portfolio sorting setup complete');
     }
 

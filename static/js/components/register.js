@@ -146,7 +146,6 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
         // Disable form
         document.querySelectorAll('input, button').forEach(el => el.disabled = true);
         
-        // Simulate API call
         setTimeout(() => {
             // Redirect to dashboard or login
             window.location.href = 'dashboard.html';

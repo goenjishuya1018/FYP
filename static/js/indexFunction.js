@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function selectSuggestion(value) {
         searchInput.value = value;
         hideSuggestions();
-        // You can add search functionality here
         console.log('Searching for:', value);
     }
 

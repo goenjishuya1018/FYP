@@ -371,7 +371,6 @@ class PortfolioDetail {
 
         const transactions = await PortfolioAPI.getTransactions();
         
-        // 1. Group transactions by Month (e.g., "Dec 2024")
         const grouped = transactions.reduce((groups, txn) => {
             const date = new Date(txn.transaction_date);
             const monthYear = date.toLocaleString('default', { month: 'short', year: 'numeric' });
@@ -381,7 +380,6 @@ class PortfolioDetail {
             return groups;
         }, {});
 
-        // 2. Generate HTML
         timelineContainer.innerHTML = Object.entries(grouped).map(([month, items]) => `
             <div class="timeline-item">
                 <div class="timeline-date">${month}</div>
@@ -546,15 +544,12 @@ class PortfolioDetail {
             icon: document.getElementById('goalIcon').value
         };
         
-        // In a real app, this would call an API
         alert(`Goal "${goal.name}" created successfully!`);
         this.closeGoalModal();
-        // TODO: Refresh goals list
     }
     
     // Navigation functions
     viewHolding(symbol) {
-        // Navigate to market detail page for this symbol
         if (window.parent === window) {
             window.location.href = `market.html?symbol=${symbol}`;
         } else {
@@ -566,7 +561,6 @@ class PortfolioDetail {
     }
     
     editHolding(holdingId) {
-        // Implement edit holding functionality
         console.log('Edit holding:', holdingId);
     }
     
