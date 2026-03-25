@@ -126,12 +126,12 @@ body {
     }
 }
 
-/* Add to style.css */
+
 .app-container {
     display: flex;
     min-height: 100vh;
-    height: 100vh; /* Add this */
-    overflow: hidden; /* Add this */
+    height: 100vh; 
+    overflow: hidden; 
 }
 
 .main-content {
@@ -139,7 +139,7 @@ body {
     display: flex;
     flex-direction: column;
     margin-left: 280px;
-    height: 100vh; /* Add this */
+    height: 100vh; 
 }
 
 .iframe-container {
@@ -154,7 +154,7 @@ body {
     display: block;
 }
 
-/* Update sidebar styles for better mobile */
+
 @media (max-width: 1024px) {
     .main-content {
         margin-left: 0;
@@ -165,7 +165,6 @@ body {
     }
 }
 
-/* Update for the notification */
 .notification {
     position: fixed;
     top: 20px;
@@ -268,7 +267,6 @@ body {
     box-shadow: var(--shadow-md);
 }
 
-/* Add to style.css */
 .main-content {
     flex: 1;
     display: flex;

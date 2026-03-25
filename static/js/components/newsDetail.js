@@ -108,32 +108,27 @@ class NewsManager {
             
             async generateNewsData() {
                 try {
-                    // 1. Call your Flask API
                     const response = await fetch('/api/news/market-news');
                     const rawNews = await response.json();
 
-                    // 2. Clear existing 'all' data
                     this.newsData['all'] = [];
 
-                    // 3. Map the Finnhub data format to your NewsManager format
                     const formattedNews = rawNews.map(item => ({
                         id: item.id.toString(),
                         title: item.headline,
                         summary: item.summary,
                         source: item.source,
                         time: new Date(item.datetime * 1000), // Convert Unix to JS Date
-                        category: 'Markets', // Finnhub 'general' news is mostly Markets
+                        category: 'Markets', 
                         categoryId: 'markets',
                         image: item.image,
                         url: item.url,
-                        sentiment: 'neutral' // Finnhub general API doesn't always include sentiment
+                        sentiment: 'neutral' 
                     }));
 
-                    // 4. Assign to categories
                     this.newsData['markets'] = formattedNews;
                     this.newsData['all'] = formattedNews;
 
-                    // 5. Re-render the grid now that data has arrived
                     this.renderNewsGrid();
 
                 } catch (error) {
@@ -478,7 +473,6 @@ class NewsManager {
                 // Add event listeners to pin items
                 pinnedContainer.querySelectorAll('.pin-item').forEach(item => {
                     item.addEventListener('click', (e) => {
-                        // Don't trigger if clicking on remove button
                         if (e.target.classList.contains('pin-remove')) {
                             e.stopPropagation();
                             const categoryId = e.target.dataset.categoryId;
@@ -513,7 +507,6 @@ class NewsManager {
                     cat.pinned || cat.id === this.activeCategory
                 );
                 
-                // If viewing a specific category, show only that
                 if (this.activeCategory !== 'all') {
                     const category = this.categories.find(c => c.id === this.activeCategory);
                     if (category) {
@@ -595,7 +588,6 @@ class NewsManager {
             }
             
             renderNewsCard(article) {
-                // Uses your existing timeAgo logic to convert the API timestamp
                 const timeAgo = this.timeAgo(article.time);
                 const sentimentClass = article.sentiment || 'neutral';
                 
@@ -665,7 +657,6 @@ class NewsManager {
                 return icons[categoryId] || '📰';
             }
             
-            // Enhanced pin management with modal like portfolio.html
             openPinManager() {
                 const modal = document.getElementById('pinManagementModal');
                 const listContainer = document.getElementById('pinManagementList');

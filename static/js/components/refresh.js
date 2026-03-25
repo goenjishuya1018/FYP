@@ -82,7 +82,6 @@ class AutoRefresh {
             if (!response.ok) throw new Error('Failed to fetch dashboard summary');
             const data = await response.json();
             
-            // Pass the data to your render function
             this.renderPortfolioStats(data);
         } catch (error) {
             console.error("Error updating dashboard stats:", error);
@@ -93,21 +92,17 @@ class AutoRefresh {
         const container = document.querySelector('.portfolio-cards');
         if (!data || !container) return;
 
-        // 1. Extract values from your Python API response
         const marketValue = data.market_value || 0; // Current market value
         const costBasis = data.asset_value || 0;    // Total amount invested
         const yesterdayValue = data.yesterday_value || marketValue;
 
-        // 2. Perform Calculations
         const totalChange = marketValue - costBasis;
         const dailyChange = marketValue - yesterdayValue;
         const dailyPercent = yesterdayValue !== 0 ? (dailyChange / yesterdayValue) * 100 : 0;
 
-        // 3. Determine CSS classes for colors
         const totalClass = totalChange >= 0 ? 'positive' : 'negative';
         const dailyClass = dailyChange >= 0 ? 'positive' : 'negative';
 
-        // 4. Update the HTML
         container.innerHTML = `
             <div class="portfolio-card total-value">
                 <div class="card-header">

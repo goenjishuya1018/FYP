@@ -8,7 +8,6 @@ class AlertsAPI {
     // Stock price alerts
     async getAlerts() {
         try {
-            // Mock data - replace with actual API call
             await this.simulateDelay();
             return [
                 {
@@ -85,7 +84,6 @@ class AlertsAPI {
 
     async createAlert(alertData) {
         try {
-            // Mock API call
             await this.simulateDelay();
             return {
                 id: Math.floor(Math.random() * 1000),
@@ -124,7 +122,6 @@ class AlertsAPI {
         try {
             await this.simulateDelay();
             
-            // Mock dividend and corporate events
             return [
                 {
                     id: 101,
@@ -202,7 +199,6 @@ class AlertsAPI {
                 return JSON.parse(savedEvents);
             }
             
-            // Default mock events
             return [
                 {
                     id: 201,

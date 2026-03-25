@@ -44,7 +44,7 @@ class AlertsManager {
             quickSymbol.addEventListener('input', (e) => this.searchStocks(e.target.value, 'quick'));
         }
 
-        // Alert symbol search - FIXED: Add debounce and enter key handler
+        // Alert symbol search 
         const alertSymbol = document.getElementById('alertSymbol');
         if (alertSymbol) {
             let searchTimeout;

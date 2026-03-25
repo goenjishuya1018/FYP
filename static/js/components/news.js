@@ -9,7 +9,6 @@ class NewsManager {
         try {
             this.showLoading();
             
-            // In a real app, this would be an API call
             this.news = await this.fetchNewsFromAPI(category);
             this.renderNews();
             
@@ -20,7 +19,6 @@ class NewsManager {
     }
 
     async fetchNewsFromAPI(category) {
-        // Mock API response - replace with actual news API
         return [
             {
                 id: 1,
@@ -167,7 +165,6 @@ class NewsManager {
     openArticle(articleId) {
         const article = this.news.find(a => a.id === articleId);
         if (article) {
-            // In a real app, this would open a detailed view or external link
             console.log('Opening article:', article.title);
             // window.open(article.url, '_blank');
             

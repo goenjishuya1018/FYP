@@ -101,7 +101,6 @@
             sidebar.classList.toggle('mobile-open');
             overlay.classList.toggle('active');
             
-            // Prevent body scrolling when sidebar is open
             if (sidebar.classList.contains('mobile-open')) {
                 document.body.style.overflow = 'hidden';
             } else {
@@ -121,7 +120,6 @@
         }
     }
     
-    // Close sidebar when clicking on a nav item (mobile)
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', function() {
             if (window.innerWidth <= 768) {
