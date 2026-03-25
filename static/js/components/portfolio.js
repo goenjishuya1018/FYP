@@ -14,9 +14,9 @@ class PortfolioManager {
         try {
             this.showPortfolioLoading();
             
-            // Load holdings data
-            this.holdings = await this.fetchHoldings();
-            this.renderHoldings();
+            // // Load holdings data
+            // this.holdings = await this.fetchHoldings();
+            // this.renderHoldings();
             
             // Load performance data
             this.performanceData = await this.fetchPerformanceData();
@@ -134,43 +134,43 @@ class PortfolioManager {
         ];
     }
 
-    renderHoldings() {
-        const holdingsContainer = document.getElementById('holdingsList');
+    // renderHoldings() {
+    //     const holdingsContainer = document.getElementById('holdingsList');
         
-        if (!this.holdings || this.holdings.length === 0) {
-            holdingsContainer.innerHTML = this.getEmptyHoldingsState();
-            return;
-        }
+    //     if (!this.holdings || this.holdings.length === 0) {
+    //         holdingsContainer.innerHTML = this.getEmptyHoldingsState();
+    //         return;
+    //     }
 
-        holdingsContainer.innerHTML = this.holdings.map(holding => `
-            <div class="holding-item" data-symbol="${holding.symbol}">
-                <div class="stock-info">
-                    <div class="stock-icon">${this.getStockIcon(holding.sector)}</div>
-                    <div>
-                        <div class="stock-symbol">${holding.symbol}</div>
-                        <div class="stock-name">${holding.name}</div>
-                        <div class="holding-details">
-                            ${holding.shares} shares • ${holding.allocation}%
-                        </div>
-                    </div>
-                </div>
-                <div class="holding-performance">
-                    <div class="price">${Helpers.formatCurrency(holding.currentPrice)}</div>
-                    <div class="change ${holding.change >= 0 ? 'positive' : 'negative'}">
-                        ${holding.change >= 0 ? '+' : ''}${holding.changePercent}%
-                    </div>
-                    <div class="market-value">
-                        ${Helpers.formatCurrency(holding.marketValue)}
-                    </div>
-                    <div class="daily-gain ${holding.dailyGain >= 0 ? 'positive' : 'negative'}">
-                        ${holding.dailyGain >= 0 ? '+' : ''}${Helpers.formatCurrency(holding.dailyGain)}
-                    </div>
-                </div>
-            </div>
-        `).join('');
+    //     holdingsContainer.innerHTML = this.holdings.map(holding => `
+    //         <div class="holding-item" data-symbol="${holding.symbol}">
+    //             <div class="stock-info">
+    //                 <div class="stock-icon">${this.getStockIcon(holding.sector)}</div>
+    //                 <div>
+    //                     <div class="stock-symbol">${holding.symbol}</div>
+    //                     <div class="stock-name">${holding.name}</div>
+    //                     <div class="holding-details">
+    //                         ${holding.shares} shares • ${holding.allocation}%
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //             <div class="holding-performance">
+    //                 <div class="price">${Helpers.formatCurrency(holding.currentPrice)}</div>
+    //                 <div class="change ${holding.change >= 0 ? 'positive' : 'negative'}">
+    //                     ${holding.change >= 0 ? '+' : ''}${holding.changePercent}%
+    //                 </div>
+    //                 <div class="market-value">
+    //                     ${Helpers.formatCurrency(holding.marketValue)}
+    //                 </div>
+    //                 <div class="daily-gain ${holding.dailyGain >= 0 ? 'positive' : 'negative'}">
+    //                     ${holding.dailyGain >= 0 ? '+' : ''}${Helpers.formatCurrency(holding.dailyGain)}
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     `).join('');
 
-        this.injectHoldingsStyles();
-    }
+    //     this.injectHoldingsStyles();
+    // }
 
     getStockIcon(sector) {
         const icons = {
