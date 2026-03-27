@@ -10,6 +10,7 @@ class AutoRefresh {
         this.performSync();
         this.startAutoRefresh();
         this.fetchDashboardSummary();
+        this.fetchDashboardNews(); // Initial load of news
         
         // Listen for visibility changes
         document.addEventListener('visibilitychange', () => {
@@ -40,24 +41,17 @@ class AutoRefresh {
 
     async refreshData() {
         if (this.isRefreshing) return;
-        
         this.isRefreshing = true;
         
         try {
-            // Refresh portfolio data
-            if (portfolioManager && typeof portfolioManager.loadPortfolioData === 'function') {
-                await portfolioManager.loadPortfolioData();
-            }
-            
-            // Refresh dashboard data
-            if (window.dashboard && typeof window.dashboard.refreshData === 'function') {
-                await window.dashboard.refreshData();
-            }
-            
-            console.log('Data refreshed at', new Date().toLocaleTimeString());
-            
+            // Refresh everything
+            await Promise.all([
+                this.fetchDashboardSummary(),
+                this.fetchDashboardNews(),
+                this.performSync()
+            ]);
         } catch (error) {
-            console.error('Error refreshing data:', error);
+            console.error("Auto-refresh failed:", error);
         } finally {
             this.isRefreshing = false;
         }
@@ -140,6 +134,68 @@ class AutoRefresh {
                 </div>
             </div>
         `;
+    }
+
+    async fetchDashboardNews() {
+        try {
+            // Calling your existing news API endpoint
+            const response = await fetch('/api/news/market-news'); 
+            const news = await response.json();
+            
+            // Take only the first 4 articles for the dashboard
+            const previewNews = news.slice(0, 4);
+            this.renderDashboardNews(previewNews);
+        } catch (error) {
+            console.error("Error loading dashboard news:", error);
+            document.getElementById('newsGridContainer').innerHTML = 
+                '<p class="error-msg">Unable to load news at this time.</p>';
+        }
+    }
+
+    renderDashboardNews(newsList) {
+        const container = document.getElementById('newsGridContainer');
+        if (!container) return;
+
+        if (!newsList || newsList.length === 0) {
+            container.innerHTML = '<div class="no-news">No recent market news found.</div>';
+            return;
+        }
+
+        container.innerHTML = newsList.map(article => `
+            <div class="news-card" onclick="newsManager.openArticle(${article.id})">
+                <div class="news-image">
+                    ${this.getArticleImage(article)}
+                </div>
+                <div class="news-content">
+                    <div class="news-source">
+                        <span class="source-name">${article.source}</span>
+                        <span class="news-time">${Helpers.formatTimeAgo(article.publishedAt)}</span>
+                    </div>
+                    <div class="news-category">${article.category}</div>
+                    <div class="news-title">${article.title}</div>
+                    <div class="news-summary">${article.summary}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+     getArticleImage(article) {
+        if (article.imageUrl) {
+            return `<img src="${article.imageUrl}" alt="${article.title}" style="width:100%;height:100%;object-fit:cover;">`;
+        }
+        
+        // Generate placeholder based on category
+        const placeholders = {
+            economics: '📊',
+            earnings: '💹',
+            crypto: '₿',
+            automotive: '🚗',
+            markets: '🌍',
+            energy: '⚡'
+        };
+        
+        const emoji = placeholders[article.category] || '📰';
+        return `<div style="display:flex;align-items:center;justify-content:center;font-size:3rem;background:linear-gradient(135deg,#667eea,#764ba2);color:white;width:100%;height:100%;">${emoji}</div>`;
     }
 
     setRefreshInterval(interval) {
