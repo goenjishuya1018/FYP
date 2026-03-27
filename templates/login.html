@@ -45,13 +45,13 @@
         <div class="login-right">
             <div>
                 <h2 class="form-title">Sign in to your account</h2>
-                <p class="form-subtitle">Enter your email to access your dashboard</p>
+                <p class="form-subtitle">Enter your User ID and password to access your dashboard</p>
                 
                 <form class="login-form" id="loginForm" action="{{ url_for('login') }}" method="POST">
                     <div class="form-group">
-                        <label for="email" class="form-label">Email Address</label>
-                        <input type="email" name="email" id="email" class="form-input" placeholder="name@example.com" required>
-                        <div class="error-message" id="emailError">Please enter a valid email address</div>
+                        <label for="userid" class="form-label">User ID</label>
+                        <input type="text" name="userid" id="userid" class="form-input" placeholder="Enter your User ID" required>
+                        <div class="error-message" id="useridError">Please enter a valid User ID</div>
                     </div>
                     
                     <div class="form-group">
@@ -99,7 +99,7 @@
                     </div>
                     
                     <div class="signup-link">
-                        Don't have an account? <a href="#">Sign up now</a>
+                        Don't have an account? <a href="{{ url_for('to_register') }}">Sign up now</a>
                     </div>
                 </form>
             </div>

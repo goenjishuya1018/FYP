@@ -58,7 +58,7 @@
                     <span>Account created successfully! Redirecting to dashboard...</span>
                 </div>
                 
-                <form class="login-form" id="registerForm" novalidate>
+                <form class="login-form" id="registerForm" action="{{ url_for('create_user') }}" method="POST" novalidate>
                     <!-- Name Fields -->
                     <div class="form-row">
                         <div class="form-group">
@@ -72,6 +72,18 @@
                             <input type="text" id="lastName" class="form-input" placeholder="Li" required>
                             <div class="error-message" id="lastNameError">Last name is required</div>
                         </div>
+                    </div>
+
+                    <!-- User ID -->
+                    <div class="form-group">
+                        <label for="userid" class="form-label">User ID</label>
+                        <input type="text" id="userid" 
+                            class="form-input" 
+                            pattern="[a-zA-Z0-9]+" 
+                            title="Only English letters and numbers are allowed" 
+                            placeholder="Only English letters and numbers are allowed"
+                            required>   
+                        <div class="error-message" id="useridError">User ID can only contain English letters and numbers</div>                 
                     </div>
                     
                     <!-- Email -->
@@ -185,7 +197,7 @@
                     </div>
                     
                     <div class="signup-link">
-                        Already have an account? <a href="../static/html/login.html">Sign in</a>
+                        Already have an account? <a href="{{ url_for('to_login') }}">Sign in</a>
                     </div>
                 </form>
             </div>

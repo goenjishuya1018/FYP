@@ -39,7 +39,7 @@
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Markets</span>
                 </li>
-                <li class="nav-item" data-page="alerts.html">
+                <li class="nav-item" data-page="{{ url_for('alerts') }}">
                     <span class="nav-icon">🔔</span>
                     <span class="nav-text">Alerts</span>
                 </li>
@@ -47,7 +47,7 @@
                     <span class="nav-icon">📰</span>
                     <span class="nav-text">News</span>
                 </li>
-                <li class="nav-item" data-page="settings.html">
+                <li class="nav-item" data-page="{{ url_for('settings') }}">
                     <span class="nav-icon">⚙️</span>
                     <span class="nav-text">Settings</span>
                 </li>
@@ -74,8 +74,8 @@
                     </div>
                     
                     <div class="user-menu">
-                        <div class="user-avatar">ZL</div>
-                        <span class="user-name">Zayne Li</span>
+                        <div class="user-avatar">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
+                        <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
                     </div>
                 </div>
             </header>

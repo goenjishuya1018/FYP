@@ -138,18 +138,58 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
         isValid = false;
     }
     
+    // if (isValid) {
+    //     // Show success message
+    //     const successMsg = document.getElementById('successMessage');
+    //     successMsg.classList.add('show');
+        
+    //     // Disable form
+    //     document.querySelectorAll('input, button').forEach(el => el.disabled = true);
+        
+    //     setTimeout(() => {
+    //         // Redirect to dashboard or login
+    //         window.location.href = 'createUser';
+    //     }, 2000);
+    // }
+
+    // Inside register.js, within the "if (isValid)" block:
+
     if (isValid) {
-        // Show success message
-        const successMsg = document.getElementById('successMessage');
-        successMsg.classList.add('show');
-        
-        // Disable form
-        document.querySelectorAll('input, button').forEach(el => el.disabled = true);
-        
-        setTimeout(() => {
-            // Redirect to dashboard or login
-            window.location.href = 'dashboard.html';
-        }, 2000);
+        // Collect form data - Make sure these IDs match your HTMLExactly
+        const formData = {
+            firstName: document.getElementById('firstName').value.trim(),
+            lastName: document.getElementById('lastName').value.trim(),
+            userid: document.getElementById('userid').value.trim(), // Added this
+            email: document.getElementById('email').value.trim(),
+            password: password.value, 
+            phone: document.getElementById('phone').value
+        };
+
+        // Send to Python Backend
+        fetch('/createUser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // This tells Flask to expect JSON
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Success logic remains the same
+                const successMsg = document.getElementById('successMessage');
+                successMsg.classList.add('show');
+                document.querySelectorAll('input, button').forEach(el => el.disabled = true);
+                setTimeout(() => { window.location.href = '/'; }, 2000);
+            } else {
+                // Handle errors sent from Python (like "Email already registered")
+                alert('Registration failed: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred during registration.');
+        });
     }
 });
 
@@ -189,17 +229,17 @@ document.getElementById('email').addEventListener('input', function() {
     }
 });
 
-// Phone number formatting
-document.getElementById('phone').addEventListener('input', function(e) {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length > 0) {
-        if (value.length <= 3) {
-            value = value;
-        } else if (value.length <= 6) {
-            value = value.slice(0, 3) + '-' + value.slice(3);
-        } else {
-            value = value.slice(0, 3) + '-' + value.slice(3, 6) + '-' + value.slice(6, 10);
-        }
-        e.target.value = value;
-    }
-});
+// // Phone number formatting
+// document.getElementById('phone').addEventListener('input', function(e) {
+//     let value = e.target.value.replace(/\D/g, '');
+//     if (value.length > 0) {
+//         if (value.length <= 3) {
+//             value = value;
+//         } else if (value.length <= 6) {
+//             value = value.slice(0, 3) + '-' + value.slice(3);
+//         } else {
+//             value = value.slice(0, 3) + '-' + value.slice(3, 6) + '-' + value.slice(6, 10);
+//         }
+//         e.target.value = value;
+//     }
+// });

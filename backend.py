@@ -91,26 +91,72 @@ def sync_portfolio():
     new_total = sync_portfolio_market_value(p_id)
     return jsonify({"success": True, "total": new_total})
 
-@app.route('/api/dashboard/summary', methods=['GET'])
-def get_dashboard_summary():
-    user_id = session.get('user_id')
-    if not user_id:
-        return jsonify({"error": "Unauthorized"}), 401
+# ----- register -----
+@app.route('/to_register')
+def to_register():
+    return render_template('register.html')
 
-    # 1. Get the portfolio_id linked to this user
-    user_res = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
-    p_id = user_res.data.get('portfolio_id')
-
-    # 2. Fetch the summary data from the portfolio table
-    portfolio_res = supabase.table("portfolio").select("*").eq("portfolio_id", p_id).maybe_single().execute()
+@app.route('/createUser', methods=['POST'])
+def create_user():
+    # 1. Get JSON data from the fetch request
+    data = request.get_json()
     
-    return jsonify(portfolio_res.data)
+    email_input = data.get("email")
+    userid_input = data.get("userid")
+    print("Received registration data:", email_input, userid_input)  # Debug log
+    password_input = data.get("password")
+    
+    try:
+        # 2. Check for existing users (Fixed the AttributeError safety check)
+        existing_email = supabase.table("user").select("*").eq("email", email_input).maybe_single().execute()
+        existing_userid = supabase.table("user").select("*").eq("user_id", userid_input).maybe_single().execute()
+        
+        if existing_email and existing_email.data:
+            return jsonify({"success": False, "error": "Email already registered"}), 400
+        
+        if existing_userid and existing_userid.data:
+            return jsonify({"success": False, "error": "User ID already taken"}), 400
+
+        # 3. Insert the new user
+        supabase.table("user").insert({
+            "user_id": userid_input,
+            "email": email_input,
+            "password": password_input,
+            "first_name": data.get("firstName"),
+            "last_name": data.get("lastName"),
+            "phone": data.get("phone")
+        }).execute()
+
+        # 4. Get the portfolio_id that was auto-assigned (if using Supabase defaults)
+        user_res = supabase.table("user").select("portfolio_id").eq("user_id", userid_input).maybe_single().execute()
+        p_id = user_res.data.get('portfolio_id')
+
+        # 5. Initialize the portfolio
+        supabase.table("portfolio").insert({
+            "portfolio_id": p_id,
+            "asset_value": 0,
+            "market_value": 0,
+            "yesterday_value": 0
+        }).execute()
+
+        # 6. Set session and return success to JS
+        session['user_id'] = userid_input
+        return jsonify({"success": True})
+
+    except Exception as e:
+        print(f"Registration Error: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+# ----- login -----
+@app.route('/to_login')
+def to_login():
+    return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
 def login():
-    email_input = request.form.get("email")
+    userid_input = request.form.get("userid")
     
-    response = supabase.table("user").select("*").eq("email", email_input).maybe_single().execute()
+    response = supabase.table("user").select("*").eq("user_id", userid_input).maybe_single().execute()
     
     if response.data:
         session['user_id'] = response.data['user_id']
@@ -118,6 +164,7 @@ def login():
     else:
         return "Invalid Login", 401
 
+# ----- index -----
 @app.route('/')
 def index():
     user_id = session.get('user_id')
@@ -133,6 +180,22 @@ def index():
     portfolio_data = portfolio_response.data
 
     return render_template('index.html', user=user_data, portfolio=portfolio_data)
+
+# ----- dashboard -----
+@app.route('/api/dashboard/summary', methods=['GET'])
+def get_dashboard_summary():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    # 1. Get the portfolio_id linked to this user
+    user_res = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
+    p_id = user_res.data.get('portfolio_id')
+
+    # 2. Fetch the summary data from the portfolio table
+    portfolio_res = supabase.table("portfolio").select("*").eq("portfolio_id", p_id).maybe_single().execute()
+    
+    return jsonify(portfolio_res.data)
 
 @app.route('/dashboard/')
 def dashboard():
@@ -150,10 +213,7 @@ def dashboard():
     if user_data:
         return render_template('dashboard.html', user=user_data, portfolio=portfolio_data)
 
-@app.route('/markets')
-def markets():
-    return render_template('markets.html')
-
+# ----- portfolio -----
 @app.route('/portfolio')
 def portfolio():
     user_id = session.get('user_id')
@@ -168,79 +228,6 @@ def portfolio():
     portfolio_data = portfolio_response.data
     
     return render_template('portfolio.html', user=user_data, portfolio=portfolio_data)
-
-# @app.route('/api/get-mins-portfolio-performance')
-# def get_mins_portfolio_performance():
-#     user_id = session.get('user_id')
-#     if not user_id:
-#         return jsonify({"error": "Unauthorized"}), 401
-    
-#     # 1. Get Portfolio ID from user table
-#     user_data = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
-#     if not user_data.data:
-#         return jsonify({"error": "No portfolio found"}), 404
-        
-#     p_id = user_data.data.get('portfolio_id')
-
-#     # 2. Get the latest Daily Snapshot
-#     daily_data = supabase.table("daily_snapshot").select("snapshot_id").eq("portfolio_id", p_id).order("created_at", desc=True).limit(1).maybe_single().execute()
-#     if not daily_data.data:
-#         return jsonify([]) # Return empty list if no data today
-
-#     snapshot_id = daily_data.data.get('snapshot_id')
-
-#     # 3. Get all minute records for this snapshot
-#     mins_response = supabase.table("mins_snapshot") \
-#         .select("portfolio_value, recorded_at") \
-#         .eq("snapshot_id", snapshot_id) \
-#         .order("recorded_at", desc=False) \
-#         .execute()
-
-#     return jsonify(mins_response.data)
-
-@app.route('/news')
-def news():
-    return render_template('news.html')
-
-@app.route('/api/news/market-news')
-def get_market_news():
-    try:
-        # Fetch general market news
-        # 'general' includes business, politics, and economy
-        news_data = finnhub_client.general_news('general', min_id=0)
-        
-        # Return only the latest 10 articles to keep the page fast
-        return jsonify(news_data) 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    
-@app.route('/api/news/market-summary')
-def get_market_summary():
-    # Map your UI names to Finnhub symbols
-    targets = {
-        "S&P 500(SPY)": "SPY", 
-        "Dow Jones(DIA)": "DIA", 
-        "NASDAQ(QQQ)": "QQQ", 
-        "Bitcoin(BTC)": "BINANCE:BTCUSDT",
-        "Gold(GLD)": "GLD",
-        "Treasury 10Y(IEF)": "IEF" # 7-10 Year Treasury Bond ETF
-    }
-    
-    summary_data = []
-    
-    for name, symbol in targets.items():
-        try:
-            quote = finnhub_client.quote(symbol)
-            summary_data.append({
-                "name": name,
-                "price": quote['c'],
-                "change": quote['d'],
-                "percent": quote['dp']
-            })
-        except Exception as e:
-            print(f"Error fetching {name}: {e}")
-            
-    return jsonify(summary_data)
 
 @app.route('/api/portfolio/holdings')
 def get_holdings():
@@ -291,10 +278,6 @@ def get_holdings():
             print(f"Error fetching price for {item['symbol']}: {e}")
 
     return jsonify(enriched_holdings) 
-
-@app.template_filter('format_currency')
-def format_currency(value):
-    return "{:,.2f}".format(value)
 
 @app.route('/api/portfolio/add-transaction', methods=['POST'])
 def add_transaction():
@@ -387,6 +370,71 @@ def get_transactions():
         .execute()
 
     return jsonify(response.data)
+
+# ----- markets -----
+@app.route('/markets')
+def markets():
+    return render_template('markets.html')
+
+# ----- news -----
+@app.route('/news')
+def news():
+    return render_template('news.html')
+
+@app.route('/api/news/market-news')
+def get_market_news():
+    try:
+        # Fetch general market news
+        # 'general' includes business, politics, and economy
+        news_data = finnhub_client.general_news('general', min_id=0)
+        
+        # Return only the latest 10 articles to keep the page fast
+        return jsonify(news_data) 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/news/market-summary')
+def get_market_summary():
+    # Map your UI names to Finnhub symbols
+    targets = {
+        "S&P 500(SPY)": "SPY", 
+        "Dow Jones(DIA)": "DIA", 
+        "NASDAQ(QQQ)": "QQQ", 
+        "Bitcoin(BTC)": "BINANCE:BTCUSDT",
+        "Gold(GLD)": "GLD",
+        "Treasury 10Y(IEF)": "IEF" # 7-10 Year Treasury Bond ETF
+    }
+    
+    summary_data = []
+    
+    for name, symbol in targets.items():
+        try:
+            quote = finnhub_client.quote(symbol)
+            summary_data.append({
+                "name": name,
+                "price": quote['c'],
+                "change": quote['d'],
+                "percent": quote['dp']
+            })
+        except Exception as e:
+            print(f"Error fetching {name}: {e}")
+            
+    return jsonify(summary_data)
+
+# ----- alerts -----
+@app.route('/alerts')
+def alerts():
+    return render_template('alerts.html')
+
+# ----- settings -----
+@app.route('/settings')
+def settings():
+    return render_template('settings.html')
+
+# ----- utility functions -----
+@app.template_filter('format_currency')
+def format_currency(value):
+    return "{:,.2f}".format(value)
 
 if __name__ == '__main__':
     app.run(debug=True)
