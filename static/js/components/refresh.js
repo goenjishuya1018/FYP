@@ -10,7 +10,8 @@ class AutoRefresh {
         this.performSync();
         this.startAutoRefresh();
         this.fetchDashboardSummary();
-        this.fetchDashboardNews(); // Initial load of news
+        this.fetchDashboardNews();
+        this.fetchHoldings();
         
         // Listen for visibility changes
         document.addEventListener('visibilitychange', () => {
@@ -48,6 +49,7 @@ class AutoRefresh {
             await Promise.all([
                 this.fetchDashboardSummary(),
                 this.fetchDashboardNews(),
+                this.fetchHoldings(),
                 this.performSync()
             ]);
         } catch (error) {
@@ -164,22 +166,46 @@ class AutoRefresh {
         container.innerHTML = newsList.map(article => `
             <div class="news-card" onclick="newsManager.openArticle(${article.id})">
                 <div class="news-image">
-                    ${this.getArticleImage(article)}
+                    ${article.image ? 
+                        `<img src="${article.image}" alt="${article.title}" style="width:100%; height:160px; object-fit:cover;">` : 
+                        `<div class="placeholder-image">
+                            ${this.getCategoryIcon(article.category)}
+                        </div>`
+                    }
                 </div>
                 <div class="news-content">
                     <div class="news-source">
                         <span class="source-name">${article.source}</span>
-                        <span class="news-time">${Helpers.formatTimeAgo(article.publishedAt)}</span>
                     </div>
-                    <div class="news-category">${article.category}</div>
-                    <div class="news-title">${article.title}</div>
+                    <div class="news-title">${article.headline}</div>
                     <div class="news-summary">${article.summary}</div>
                 </div>
             </div>
         `).join('');
     }
 
-     getArticleImage(article) {
+    timeAgo(date) {
+        const seconds = Math.floor((new Date() - date) / 1000);
+        
+        let interval = seconds / 31536000;
+        if (interval > 1) return Math.floor(interval) + ' years ago';
+        
+        interval = seconds / 2592000;
+        if (interval > 1) return Math.floor(interval) + ' months ago';
+        
+        interval = seconds / 86400;
+        if (interval > 1) return Math.floor(interval) + ' days ago';
+        
+        interval = seconds / 3600;
+        if (interval > 1) return Math.floor(interval) + ' hours ago';
+        
+        interval = seconds / 60;
+        if (interval > 1) return Math.floor(interval) + ' minutes ago';
+        
+        return Math.floor(seconds) + ' seconds ago';
+    }
+
+    getArticleImage(article) {
         if (article.imageUrl) {
             return `<img src="${article.imageUrl}" alt="${article.title}" style="width:100%;height:100%;object-fit:cover;">`;
         }
@@ -196,6 +222,45 @@ class AutoRefresh {
         
         const emoji = placeholders[article.category] || '📰';
         return `<div style="display:flex;align-items:center;justify-content:center;font-size:3rem;background:linear-gradient(135deg,#667eea,#764ba2);color:white;width:100%;height:100%;">${emoji}</div>`;
+    }
+
+    async fetchHoldings() {
+        try {
+            const response = await fetch('/api/dashboard/holdings');
+            const holdings = await response.json();
+            this.renderHoldingsList(holdings);
+        } catch (error) {
+            console.error("Error fetching holdings:", error);
+        }
+    }
+
+    renderHoldingsList(holdings) {
+        const container = document.getElementById('holdingsList');
+        if (!container) return;
+
+        if (!holdings || holdings.length === 0) {
+            container.innerHTML = '<div class="no-data">No holdings yet. Start trading!</div>';
+            return;
+        }
+
+        // Sort by value descending
+        holdings.sort((a, b) => (b.quantity * b.avg_cost) - (a.quantity * a.avg_cost));
+
+        container.innerHTML = holdings.map(item => {
+            const totalValue = item.quantity * item.avg_cost; // Using avg_cost as placeholder for live price
+            return `
+                <div class="holding-item">
+                    <div class="holding-info">
+                        <span class="holding-symbol">${item.symbol}</span>
+                        <span class="holding-shares">${item.quantity} Shares</span>
+                    </div>
+                    <div class="holding-value">
+                        <div class="value-amount">${Helpers.formatCurrency(totalValue)}</div>
+                        <div class="value-label">Avg Cost: $${item.avg_cost}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     setRefreshInterval(interval) {

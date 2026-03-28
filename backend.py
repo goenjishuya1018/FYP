@@ -213,6 +213,18 @@ def dashboard():
     if user_data:
         return render_template('dashboard.html', user=user_data, portfolio=portfolio_data)
 
+@app.route('/api/dashboard/holdings')
+def get_dashboard_holdings():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    user_data = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
+    p_id = user_data.data.get('portfolio_id')
+
+    holdings = supabase.table("holdings").select("*").eq("portfolio_id", p_id).execute()
+    return jsonify(holdings.data)
+
 # ----- portfolio -----
 @app.route('/portfolio')
 def portfolio():
@@ -238,18 +250,14 @@ def get_holdings():
     user_data = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
     p_id = user_data.data.get('portfolio_id')
 
-    # 1. Get the holdings from Supabase
-    # Assuming your table is called 'holdings' and has columns: symbol, quantity, avg_cost
     holdings_response = supabase.table("holdings").select("*").eq("portfolio_id", p_id).execute()
     holdings = holdings_response.data
 
-    # 2. Enrich holdings with real-time prices
     enriched_holdings = []
     count = 0
 
     for item in holdings:
         try:
-            # Fetch current price from Finnhub (or your preferred API)
             quote = finnhub_client.quote(item['symbol'])
             current_price = quote['c'] # 'c' is Current Price
             
@@ -375,6 +383,8 @@ def get_transactions():
 @app.route('/markets')
 def markets():
     return render_template('markets.html')
+
+
 
 # ----- news -----
 @app.route('/news')
