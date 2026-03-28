@@ -384,7 +384,17 @@ def get_transactions():
 def markets():
     return render_template('markets.html')
 
-
+@app.route('/stock/<symbol>')
+def stock_detail(symbol):
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('to_login'))
+    
+    try:
+        quote = finnhub_client.quote(symbol)
+        return render_template('markets.html', symbol=symbol, quote=quote)
+    except Exception as e:
+        return f"Error fetching stock {symbol}: {e}", 404
 
 # ----- news -----
 @app.route('/news')

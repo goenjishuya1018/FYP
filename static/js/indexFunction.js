@@ -102,6 +102,31 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Searching for:', value);
     }
 
+    if (searchInput) {
+        searchInput.addEventListener('keydown', function(event) {
+            // Check for Enter key
+            if (event.key === 'Enter') {
+                const symbol = searchInput.value.trim().toUpperCase();
+                
+                if (symbol) {
+                    console.log('Searching for symbol:', symbol);
+                    
+                    // Use contentFrame (which you already defined at the top of this file)
+                    // This loads the stock page inside your main iframe
+                    contentFrame.src = `/stock/${symbol}`;
+                    
+                    // Update the page title manually since we are bypassing the sidebar clicks
+                    const pageTitle = document.getElementById('pageTitle');
+                    if (pageTitle) pageTitle.textContent = `Stock: ${symbol}`;
+                    
+                    // Clear search and hide suggestions
+                    searchInput.value = '';
+                    hideSuggestions();
+                }
+            }
+        });
+    }
+
     // Event listeners for search
     searchInput.addEventListener('input', showSuggestions);
     searchInput.addEventListener('focus', showSuggestions);
