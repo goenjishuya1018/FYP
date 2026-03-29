@@ -5,32 +5,32 @@ class FinancialAPI {
     static FINNHUB_URL = 'https://finnhub.io/api/v1';
     static FINNHUB_KEY = 'demo'; // Replace with Finnhub API key
     
-    static async getStockOverview(symbol) {
-        try {
-            // Alpha Vantage API for company overview
-            const response = await fetch(
-                `${this.BASE_URL}?function=OVERVIEW&symbol=${symbol}&apikey=${this.API_KEY}`
-            );
+    // static async getStockOverview(symbol) {
+    //     try {
+    //         // Alpha Vantage API for company overview
+    //         const response = await fetch(
+    //             `${this.BASE_URL}?function=OVERVIEW&symbol=${symbol}&apikey=${this.API_KEY}`
+    //         );
             
-            if (!response.ok) {
-                throw new Error('API request failed');
-            }
+    //         if (!response.ok) {
+    //             throw new Error('API request failed');
+    //         }
             
-            const data = await response.json();
+    //         const data = await response.json();
             
-            if (data.Note || data.Information) {
-                // API limit reached, use mock data
-                console.warn('API limit reached, using mock data');
-                return this.getMockOverview(symbol);
-            }
+    //         if (data.Note || data.Information) {
+    //             // API limit reached, use mock data
+    //             console.warn('API limit reached, using mock data');
+    //             return this.getMockOverview(symbol);
+    //         }
             
-            return this.formatOverviewData(data);
+    //         return this.formatOverviewData(data);
             
-        } catch (error) {
-            console.error('Error fetching stock overview:', error);
-            return this.getMockOverview(symbol);
-        }
-    }
+    //     } catch (error) {
+    //         console.error('Error fetching stock overview:', error);
+    //         return this.getMockOverview(symbol);
+    //     }
+    // }
     
     static async getStockQuote(symbol) {
         try {

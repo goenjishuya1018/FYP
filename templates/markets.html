@@ -26,20 +26,25 @@
         <!-- Stock Overview -->
         <section class="stock-overview">
             <div class="stock-header">
-                <div class="stock-logo" id="stockLogo">NIKE</div>
+                <div class="stock-logo" id="stockLogo">{{ symbol.symbol }}</div>
                 <div class="stock-info">
-                    <h1 id="stockName">Nike Inc.</h1>
-                    <div class="stock-symbol" id="stockSymbol">NKE</div>
-                    <div class="stock-exchange" id="stockExchange">NYSE</div>
+                    <h1 id="stockName">{{ symbol.description }}</h1>
+                    <div class="stock-symbol" id="stockSymbol">{{ symbol.symbol }}</div>
                 </div>
             </div>
 
             <div class="price-section">
                 <div class="current-price">
-                    <div class="price-amount" id="currentPrice">$104.92</div>
+                    <div class="price-amount" id="currentPrice">${{ quote.c }}</div>
                     <div class="price-change positive" id="priceChange">
-                        <span class="change-amount">+$1.47</span>
-                        <span class="change-percent">(+1.42%)</span>
+                        <span class="change-amount">
+                            {% if quote.d >= 0 %}
+                                +${{ "%.2f"|format(quote.d) }}
+                            {% else %}
+                                -${{ "%.2f"|format(quote.d|abs) }}
+                            {% endif %}
+                        </span>                        
+                        <span class="change-percent">({{ quote.dp }}%)</span>
                     </div>
                 </div>
                 <div class="price-info">
@@ -89,28 +94,28 @@
                     <h3>Key Metrics</h3>
                     <div class="metrics-grid">
                         <div class="metric-card">
-                            <div class="metric-label">Market Cap</div>
-                            <div class="metric-value" id="marketCap">$161.2B</div>
+                            <div class="metric-label">High price of the day</div>
+                            <div class="metric-value" id="marketCap">${{ quote.h }}</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-label">P/E Ratio</div>
-                            <div class="metric-value" id="peRatio">28.5</div>
+                            <div class="metric-label">Low price of the day</div>
+                            <div class="metric-value" id="peRatio">${{ quote.l }}</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-label">Dividend Yield</div>
-                            <div class="metric-value" id="dividendYield">1.42%</div>
+                            <div class="metric-label">Open price of the day</div>
+                            <div class="metric-value" id="dividendYield">${{ quote.o }}</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-label">Beta</div>
-                            <div class="metric-value" id="beta">0.96</div>
+                            <div class="metric-label">Previous close price</div>
+                            <div class="metric-value" id="beta">${{ quote.pc }}</div>
                         </div>
                         <div class="metric-card">
                             <div class="metric-label">52W High</div>
-                            <div class="metric-value" id="week52High">$128.68</div>
+                            <div class="metric-value" id="week52High">${{ metric['52WeekHigh'] | default('0.00') }}</div>
                         </div>
                         <div class="metric-card">
                             <div class="metric-label">52W Low</div>
-                            <div class="metric-value" id="week52Low">$88.66</div>
+                            <div class="metric-value" id="week52Low">${{ metric['52WeekLow'] | default('0.00') }}</div>
                         </div>
                     </div>
                 </section>

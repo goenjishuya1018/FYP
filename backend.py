@@ -14,7 +14,6 @@ SUPABASE_KEY = "sb_publishable_-zX-BOgqx6gXCesZDFiSIA_w27Ad04I"
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# function only executed after every transaction to keep the portfolio total in sync with the holdings
 def sync_portfolio_total(p_id):
     try:
         holdings_res = supabase.table("holdings").select("*").eq("portfolio_id", p_id).execute()
@@ -27,7 +26,6 @@ def sync_portfolio_total(p_id):
 
         print("successfully calculated total portfolio value:", total_value)
 
-        # 2. Update the main portfolio table
         supabase.table("portfolio").update({
             "asset_value": total_value
         }).eq("portfolio_id", p_id).execute()
@@ -37,10 +35,8 @@ def sync_portfolio_total(p_id):
         print(f"Sync Error: {e}")
         return None
 
-# function to sync the real-time market value of the portfolio, called on dashboard load and every 5 minutes while on the dashboard page. It uses the current price of each holding to calculate the total market value and updates the portfolio table in Supabase.
 def sync_portfolio_market_value(p_id):
     try:
-        # 1. Get all holdings for this portfolio
         holdings_res = supabase.table("holdings").select("*").eq("portfolio_id", p_id).execute()
         holdings = holdings_res.data
         
@@ -51,17 +47,14 @@ def sync_portfolio_market_value(p_id):
 
         total_market_value = 0
         
-        # 2. Loop through holdings and get instant prices
         for item in holdings:
             symbol = item['symbol']
             quantity = float(item['quantity'])
             
             try:
-                # Fetch instant price from API
                 quote = finnhub_client.quote(symbol)
                 current_price = quote['c']  # 'c' is the current price
                 
-                # If API fails (returns 0), fallback to average cost so the total isn't ruined
                 if current_price == 0:
                     current_price = float(item['avg_cost'])
                 
@@ -71,7 +64,6 @@ def sync_portfolio_market_value(p_id):
                 print(f"Error fetching price for {symbol}: {e}")
                 total_market_value += (quantity * float(item['avg_cost']))
 
-        # 3. Update the Portfolio table with the real-time total
         supabase.table("portfolio").update({
             "market_value": total_market_value
         }).eq("portfolio_id", p_id).execute()
@@ -391,11 +383,23 @@ def stock_detail(symbol):
         return redirect(url_for('to_login'))
     
     try:
-        quote = finnhub_client.quote(symbol)
-        return render_template('markets.html', symbol=symbol, quote=quote)
+        search_results = finnhub_client.symbol_lookup(symbol)
+        
+        
+        if search_results and search_results.get('count', 0) > 0:
+            # Access the first item in the 'result' list
+            first_quote = search_results['result'][0]
+            quote_result = finnhub_client.quote(first_quote['displaySymbol'])
+            financials_result = finnhub_client.company_basic_financials(first_quote['displaySymbol'], 'all')
+            metric = financials_result.get('metric', {})
+            print("Financials result:", metric)
+            return render_template('markets.html', symbol=first_quote, quote=quote_result, metric=metric)
+        else:
+            return f"No results found for symbol: {symbol}", 404
+            
     except Exception as e:
-        return f"Error fetching stock {symbol}: {e}", 404
-
+        print(f"Error: {e}")
+        return f"Error fetching stock {symbol}: {e}", 500
 # ----- news -----
 @app.route('/news')
 def news():
