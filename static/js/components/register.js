@@ -155,34 +155,31 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
     // Inside register.js, within the "if (isValid)" block:
 
     if (isValid) {
-        // Collect form data - Make sure these IDs match your HTMLExactly
+        console.log('Form is valid, submitting data...');
         const formData = {
             firstName: document.getElementById('firstName').value.trim(),
             lastName: document.getElementById('lastName').value.trim(),
-            userid: document.getElementById('userid').value.trim(), // Added this
+            userid: document.getElementById('userid').value.trim(), 
             email: document.getElementById('email').value.trim(),
             password: password.value, 
             phone: document.getElementById('phone').value
         };
 
-        // Send to Python Backend
         fetch('/createUser', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json', // This tells Flask to expect JSON
+                'Content-Type': 'application/json', 
             },
             body: JSON.stringify(formData)
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Success logic remains the same
                 const successMsg = document.getElementById('successMessage');
                 successMsg.classList.add('show');
                 document.querySelectorAll('input, button').forEach(el => el.disabled = true);
                 setTimeout(() => { window.location.href = '/'; }, 2000);
             } else {
-                // Handle errors sent from Python (like "Email already registered")
                 alert('Registration failed: ' + data.error);
             }
         })

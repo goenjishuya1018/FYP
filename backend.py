@@ -41,7 +41,6 @@ def sync_portfolio_market_value(p_id):
         holdings = holdings_res.data
         
         if not holdings:
-            # If no holdings, market value is 0
             supabase.table("portfolio").update({"market_value": 0}).eq("portfolio_id", p_id).execute()
             return 0
 
@@ -53,7 +52,7 @@ def sync_portfolio_market_value(p_id):
             
             try:
                 quote = finnhub_client.quote(symbol)
-                current_price = quote['c']  # 'c' is the current price
+                current_price = quote['c']
                 
                 if current_price == 0:
                     current_price = float(item['avg_cost'])
@@ -90,16 +89,14 @@ def to_register():
 
 @app.route('/createUser', methods=['POST'])
 def create_user():
-    # 1. Get JSON data from the fetch request
     data = request.get_json()
     
     email_input = data.get("email")
     userid_input = data.get("userid")
-    print("Received registration data:", email_input, userid_input)  # Debug log
+    print("Received registration data:", email_input, userid_input) 
     password_input = data.get("password")
     
     try:
-        # 2. Check for existing users (Fixed the AttributeError safety check)
         existing_email = supabase.table("user").select("*").eq("email", email_input).maybe_single().execute()
         existing_userid = supabase.table("user").select("*").eq("user_id", userid_input).maybe_single().execute()
         
@@ -109,7 +106,6 @@ def create_user():
         if existing_userid and existing_userid.data:
             return jsonify({"success": False, "error": "User ID already taken"}), 400
 
-        # 3. Insert the new user
         supabase.table("user").insert({
             "user_id": userid_input,
             "email": email_input,
@@ -119,11 +115,9 @@ def create_user():
             "phone": data.get("phone")
         }).execute()
 
-        # 4. Get the portfolio_id that was auto-assigned (if using Supabase defaults)
         user_res = supabase.table("user").select("portfolio_id").eq("user_id", userid_input).maybe_single().execute()
         p_id = user_res.data.get('portfolio_id')
 
-        # 5. Initialize the portfolio
         supabase.table("portfolio").insert({
             "portfolio_id": p_id,
             "asset_value": 0,
@@ -131,7 +125,6 @@ def create_user():
             "yesterday_value": 0
         }).execute()
 
-        # 6. Set session and return success to JS
         session['user_id'] = userid_input
         return jsonify({"success": True})
 
@@ -180,11 +173,9 @@ def get_dashboard_summary():
     if not user_id:
         return jsonify({"error": "Unauthorized"}), 401
 
-    # 1. Get the portfolio_id linked to this user
     user_res = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
     p_id = user_res.data.get('portfolio_id')
 
-    # 2. Fetch the summary data from the portfolio table
     portfolio_res = supabase.table("portfolio").select("*").eq("portfolio_id", p_id).maybe_single().execute()
     
     return jsonify(portfolio_res.data)
@@ -251,7 +242,7 @@ def get_holdings():
     for item in holdings:
         try:
             quote = finnhub_client.quote(item['symbol'])
-            current_price = quote['c'] # 'c' is Current Price
+            current_price = quote['c'] 
             
             market_value = item['quantity'] * current_price
             total_gain = market_value - (item['quantity'] * item['avg_cost'])
@@ -260,15 +251,15 @@ def get_holdings():
             enriched_holdings.append({
                 "id": count,
                 "symbol": item['symbol'],
-                "name": item.get('name', item['symbol']), # Use name if stored, else symbol
+                "name": item.get('name', item['symbol']),
                 "shares": item['quantity'],
                 "avgCost": item['avg_cost'],
                 "marketPrice": current_price,
-                "dailyChange": quote['d'], # 'd' is daily change
+                "dailyChange": quote['d'], 
                 "marketValue": market_value,
                 "totalGain": total_gain,
                 "totalGainPercent": gain_percent,
-                "dailyChangePercent": quote['dp'], # 'dp' is daily percent change
+                "dailyChangePercent": quote['dp'],
                 "dividendYield": 0.00,
                 "sector": 'Automotive',
                 "currency": 'USD'
@@ -313,7 +304,6 @@ def add_transaction():
 
     if data['type'].lower() == 'buy':
         if existing_data:
-            # Update existing: Calculate new average cost and total shares
             new_shares = existing_data['quantity'] + data['shares']
             new_total_cost = (existing_data['quantity'] * existing_data['avg_cost']) + (data['shares'] * data['price'])
             new_avg_cost = new_total_cost / new_shares
@@ -323,7 +313,6 @@ def add_transaction():
                 "avg_cost": new_avg_cost
             }).eq("portfolio_id", p_id).eq("symbol", symbol).execute()
         else:
-            # Insert new holding
             supabase.table("holdings").insert({
                 "portfolio_id": p_id,
                 "symbol": symbol,
@@ -340,9 +329,7 @@ def add_transaction():
             return jsonify({"error": "Not enough shares to sell"}), 400
         
         if new_shares == 0:
-            # Remove holding if all shares sold
             supabase.table("holdings").delete().eq("portfolio_id", p_id).eq("symbol", symbol).execute()
-            # Update holding with reduced shares (average cost remains the same)
         else:
             supabase.table("holdings").update({
                 "quantity": new_shares
@@ -358,11 +345,9 @@ def get_transactions():
     if not user_id:
         return jsonify({"error": "Unauthorized"}), 401
 
-    # 1. Get Portfolio ID
     user_data = supabase.table("user").select("portfolio_id").eq("user_id", user_id).maybe_single().execute()
     p_id = user_data.data.get('portfolio_id')
 
-    # 2. Get Transactions
     response = supabase.table("transactions") \
         .select("*") \
         .eq("portfolio_id", p_id) \
@@ -387,7 +372,6 @@ def stock_detail(symbol):
         
         
         if search_results and search_results.get('count', 0) > 0:
-            # Access the first item in the 'result' list
             first_quote = search_results['result'][0]
             quote_result = finnhub_client.quote(first_quote['displaySymbol'])
             financials_result = finnhub_client.company_basic_financials(first_quote['displaySymbol'], 'all')
@@ -400,6 +384,7 @@ def stock_detail(symbol):
     except Exception as e:
         print(f"Error: {e}")
         return f"Error fetching stock {symbol}: {e}", 500
+
 # ----- news -----
 @app.route('/news')
 def news():
@@ -408,25 +393,21 @@ def news():
 @app.route('/api/news/market-news')
 def get_market_news():
     try:
-        # Fetch general market news
-        # 'general' includes business, politics, and economy
         news_data = finnhub_client.general_news('general', min_id=0)
         
-        # Return only the latest 10 articles to keep the page fast
         return jsonify(news_data) 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/news/market-summary')
 def get_market_summary():
-    # Map your UI names to Finnhub symbols
     targets = {
         "S&P 500(SPY)": "SPY", 
         "Dow Jones(DIA)": "DIA", 
         "NASDAQ(QQQ)": "QQQ", 
         "Bitcoin(BTC)": "BINANCE:BTCUSDT",
         "Gold(GLD)": "GLD",
-        "Treasury 10Y(IEF)": "IEF" # 7-10 Year Treasury Bond ETF
+        "Treasury 10Y(IEF)": "IEF"
     }
     
     summary_data = []
