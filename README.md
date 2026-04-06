@@ -19,8 +19,10 @@ Python 3.8+
 pip (Python package manager)
 
 A Supabase account and project
+https://supabase.com/
 
 A Finnhub API key
+https://finnhub.io/dashboard 
 
 ## Install Dependencies:
 pip install flask finnhub-python supabase
