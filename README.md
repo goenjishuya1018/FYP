@@ -24,6 +24,9 @@ https://supabase.com/
 A Finnhub API key
 https://finnhub.io/dashboard 
 
+Ngrok to make server online
+https://ngrok.com/ 
+
 ## Install Dependencies:
 pip install flask finnhub-python supabase
 
